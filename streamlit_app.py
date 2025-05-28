@@ -11,7 +11,7 @@ from huggingface_hub import InferenceApi, login
 st.set_page_config(page_title="Legal Chat & Form Bot", layout="wide")
 st.header("🗂️ Legal Chat & Form Bot")
 
-# ─── 2. LOAD YOUR FORMS + METADATA ──────────────────────────────────────────────
+# ─── 2. LOAD FORMS + METADATA ────────────────────────────────────────────────────
 FORM_DIR = Path("forms")
 FORM_METADATA = {}
 for pdf in FORM_DIR.glob("*.pdf"):
@@ -42,17 +42,20 @@ def get_zs_client():
 
 zs_client = get_zs_client()
 
-# ─── 4. ZERO-SHOT FORM SELECTOR ──────────────────────────────────────────────────
+# ─── 4. ZERO-SHOT FORM SELECTOR ───────────────────────────────────────────────────
 def select_form_key(situation: str, threshold: float = 0.3) -> str:
     labels = list(FORM_METADATA.keys())
     try:
-        # Call with exactly these kwargs (no 'parameters')
-        response = zs_client(
-            inputs=situation,
-            candidate_labels=labels,
-            multi_label=False
-        )
-        # response is a dict: {"labels": [...], "scores": [...]}
+        payload = {
+            "inputs": situation,
+            "parameters": {
+                "candidate_labels": labels,
+                "multi_label": False
+            }
+        }
+        # single-arg call
+        response = zs_client(payload)
+        # response is {"labels": [...], "scores": [...]}
         top_label = response["labels"][0]
         top_score = response["scores"][0]
         if top_score >= threshold:
@@ -81,24 +84,24 @@ def fill_pdf_bytes(form_key, answers):
 # ─── 6. STREAMLIT CHAT STATE ────────────────────────────────────────────────────
 if "history" not in st.session_state:
     st.session_state.history = [
-        {"role":"bot","content":"Hi! Describe your situation and I’ll find the right form."}
+        {"role": "bot", "content": "Hi! Describe your situation and I’ll find the right form."}
     ]
     st.session_state.form_key = None
     st.session_state.filled   = False
 
-# Render chat history
+# render conversation
 for msg in st.session_state.history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Handle new user input
+# handle new user message
 if user_msg := st.chat_input("…"):
-    # Echo user
-    st.session_state.history.append({"role":"user","content":user_msg})
+    # echo user
+    st.session_state.history.append({"role": "user", "content": user_msg})
     with st.chat_message("user"):
         st.markdown(user_msg)
 
-    # Step A: form selection
+    # Step A: select form
     if st.session_state.form_key is None:
         st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
         with st.chat_message("bot"):
@@ -118,7 +121,7 @@ if user_msg := st.chat_input("…"):
         st.session_state.history.append({"role":"bot","content":bot})
         st.chat_message("bot").markdown(bot)
 
-    # Step B: fill fields
+    # Step B: prompt & fill fields
     elif not st.session_state.filled:
         meta = FORM_METADATA[st.session_state.form_key]
         answers = {}
@@ -126,13 +129,13 @@ if user_msg := st.chat_input("…"):
         for fld in meta["fields"]:
             answers[fld["name"]] = st.text_input(fld["prompt"], key=fld["name"])
         if st.button("Generate Filled PDF"):
-            pdf = fill_pdf_bytes(st.session_state.form_key, answers)
-            if pdf:
+            pdf_bytes = fill_pdf_bytes(st.session_state.form_key, answers)
+            if pdf_bytes:
                 st.session_state.history.append({"role":"bot","content":"Here’s your filled form:"})
                 with st.chat_message("bot"):
                     st.download_button(
                         "📄 Download PDF",
-                        data=pdf,
+                        data=pdf_bytes,
                         file_name=f"{st.session_state.form_key}_filled.pdf",
                         mime="application/pdf"
                     )
