@@ -15,7 +15,7 @@ import requests
 HF_TOKEN = st.secrets["HF_TOKEN"]
 
 # Use an open‐access instruction‐tuned model
-HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1"
+HF_API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
 
 HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",
