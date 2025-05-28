@@ -1,20 +1,22 @@
+# streamlit_app.py
+
 import os
 import pathlib
 import json
 import textwrap
 
-import fitz     # PyMuPDF
+import fitz           # PyMuPDF
 import streamlit as st
 import google.generativeai as genai
-from google.generativeai.types import ChatCompletionRequestMessage
 
 # ─── 1) Setup ───────────────────────────────────────────────────────────────────
 
-# Ensure output directory exists
+# Make sure output directory exists
 os.makedirs("output", exist_ok=True)
 
-# Initialize/configure Gemini API key
+# Configure Gemini API key
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
 
 # ─── 2) PDF & LLM Helpers ───────────────────────────────────────────────────────
 
@@ -36,31 +38,36 @@ def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
         You are a CBP/EOIR/ICE/USCIS form-filling expert.
         Here is the form metadata:
         {meta_json}
-        Here is the user’s description of their case:
+
+        Here is the user's description of their case:
         {case_info}
-        Return a JSON object mapping each field name to the exact value.
-    """)
-    resp = genai.chat.create(
-        model="chat-bison@001",
-        messages=[
-            ChatCompletionRequestMessage(author="system", content=prompt)
-        ]
+
+        Return a JSON object mapping each form field name to the exact value.
+    """).strip()
+
+    resp = genai.chat.completions.create(
+        model="chat-bison-001",
+        messages=[{"author": "system", "content": prompt}]
     )
-    return json.loads(resp.last.content)
+    filled = resp.choices[0].message.content
+    return json.loads(filled)
 
 def fill_pdf(form_key: str, answers: dict) -> pathlib.Path:
     in_path = pathlib.Path("data") / f"{form_key}.pdf"
     out_path = pathlib.Path("output") / f"{form_key}_filled.pdf"
     doc = fitz.open(str(in_path))
+
     for page in doc:
         for widget in page.widgets() or []:
             name = widget.field_name
             if name in answers:
                 widget.field_value = str(answers[name])
                 widget.update()
+
     doc.save(str(out_path), deflate=True)
     doc.close()
     return out_path
+
 
 # ─── 3) Chat Orchestration ─────────────────────────────────────────────────────
 
@@ -75,7 +82,7 @@ def handle_user_message(user_msg: str) -> str:
             st.session_state.stage = "fill_info"
             return f"✅ `{key}` selected. Please describe your situation so I can fill the form."
         else:
-            return "❌ I only support: eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299. Try again."
+            return "❌ Sorry, I only support those four forms. Try one of: eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299."
 
     elif stage == "fill_info":
         st.session_state.case_info = user_msg
@@ -86,17 +93,17 @@ def handle_user_message(user_msg: str) -> str:
         )
         return "🛠️ Got it! Building your filled form now…"
 
-    return "🤖 Unexpected state. Please refresh the page."
+    return "🤖 Oops, something went wrong. Please refresh the page."
+
 
 # ─── 4) Streamlit UI ───────────────────────────────────────────────────────────
 
-# Initialize session state
+# Initialize chat state
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "assistant", "content":
-         "📝 Hi there! Which form would you like to fill? Options: "
-         "`eoir_form_26`, `uscis_form_ar11`, `ice_form_i246`, `cbp_form_3299`"
-        }
+         "📝 Hi! Which form would you like to fill? Options: "
+         "`eoir_form_26`, `uscis_form_ar11`, `ice_form_i246`, `cbp_form_3299`"}
     ]
     st.session_state.stage = "select_form"
     st.session_state.form_key = None
@@ -111,15 +118,12 @@ for msg in st.session_state.messages:
 
 # Handle new user input
 if user_input := st.chat_input("Your message…"):
-    # 1) record user message
     st.session_state.messages.append({"role": "user", "content": user_input})
-
-    # 2) process and record assistant reply
     reply = handle_user_message(user_input)
     st.session_state.messages.append({"role": "assistant", "content": reply})
     st.chat_message("assistant").write(reply)
 
-    # 3) if complete, show download button
+    # If we've reached completion, show download button
     if st.session_state.stage == "complete":
         out_pdf = fill_pdf(st.session_state.form_key, st.session_state.answers)
         with open(out_pdf, "rb") as f:
