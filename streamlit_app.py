@@ -132,3 +132,92 @@ def fill_pdf(form_key: str, answers: dict) -> pathlib.Path:
     doc = fitz.open(str(in_path))
 
     for page in doc:
+        for w in page.widgets() or []:
+            if w.field_name in answers:
+                w.field_value = str(answers[w.field_name])
+                w.update()
+
+    doc.save(str(out_path), deflate=True)
+    doc.close()
+    return out_path
+
+
+# ─── 6) Chat flow ────────────────────────────────────────────────────────────────
+
+def handle_user_message(msg: str) -> str:
+    st.session_state.history.append({"role":"user", "content":msg})
+    stage = st.session_state.stage
+
+    # 1) Figure out which form to use
+    if stage == "ask_context":
+        st.session_state.case_info = msg
+        choice = llm_select_form(msg)
+        if choice == "NONE":
+            st.session_state.stage = "end_unsupported"
+            return (
+                "I’m sorry—I don’t have a form for that scenario right now.  \n"
+                "You can browse all USCIS forms here: https://www.uscis.gov/forms"
+            )
+        st.session_state.form_key = choice
+        st.session_state.stage    = "confirm_form"
+        return (
+            f"Based on your situation, it looks like you need `{choice}`.  \n"
+            "Would you like me to help fill it out? (yes/no)"
+        )
+
+    # 2) User confirms or says no
+    if stage == "confirm_form":
+        if msg.lower().strip() in ("yes","y","sure","please"):
+            st.session_state.stage   = "complete"
+            st.session_state.answers = llm_build_pdf_payload(
+                st.session_state.form_key,
+                st.session_state.case_info
+            )
+            return "Great—I'm filling it out now…"
+        else:
+            st.session_state.stage = "ask_context"
+            return "Okay, no problem. How else can I help you?"
+
+    # 3) Fallback end for unsupported scenarios
+    if stage == "end_unsupported":
+        return "If there’s anything else I can do, just let me know!"
+
+    # 4) Completed: PDF is ready to download
+    if stage == "complete":
+        return "Your form is ready! Use the download button below."
+
+    return "🤖 I got lost—please refresh the page."
+
+
+# ─── 7) Streamlit UI ───────────────────────────────────────────────────────────
+
+if "history" not in st.session_state:
+    st.session_state.history    = [
+        {"role":"assistant","content":"📝 Hi! How can I help you today?"}
+    ]
+    st.session_state.stage      = "ask_context"
+    st.session_state.form_key   = None
+    st.session_state.case_info  = ""
+    st.session_state.answers    = {}
+
+st.title("🛠️ BureauBot Demo")
+
+# Show past messages
+for m in st.session_state.history:
+    st.chat_message(m["role"]).write(m["content"])
+
+# Accept new user input
+if user_msg := st.chat_input("Your message…"):
+    reply = handle_user_message(user_msg)
+    st.session_state.history.append({"role":"assistant","content":reply})
+    st.chat_message("assistant").write(reply)
+
+    # After filling, show download button
+    if st.session_state.stage == "complete":
+        out_pdf = fill_pdf(st.session_state.form_key, st.session_state.answers)
+        with open(out_pdf, "rb") as f:
+            st.download_button(
+                label="📥 Download filled form",
+                data=f,
+                file_name=out_pdf.name
+            )
