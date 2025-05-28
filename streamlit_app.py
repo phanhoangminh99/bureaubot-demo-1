@@ -13,9 +13,8 @@ from google.generativeai.types import ChatCompletionRequestMessage
 # Ensure output directory exists
 os.makedirs("output", exist_ok=True)
 
-# Initialize Google GenAI client
-genai_client = genai.GenerativeAI()
-genai_client.init(api_key=st.secrets["GEMINI_API_KEY"])
+# Initialize/configure Gemini API key
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 # ─── 2) PDF & LLM Helpers ───────────────────────────────────────────────────────
 
@@ -41,11 +40,13 @@ def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
         {case_info}
         Return a JSON object mapping each field name to the exact value.
     """)
-    resp = genai_client.chat.advance(
-        model="models/text-bison-001",
-        messages=[types.Message(role="system", content=prompt)]
+    resp = genai.chat.create(
+        model="chat-bison@001",
+        messages=[
+            ChatCompletionRequestMessage(author="system", content=prompt)
+        ]
     )
-    return json.loads(resp.last.message.content)
+    return json.loads(resp.last.content)
 
 def fill_pdf(form_key: str, answers: dict) -> pathlib.Path:
     in_path = pathlib.Path("data") / f"{form_key}.pdf"
