@@ -1,4 +1,4 @@
 streamlit
-google-genai
+huggingface_hub
 pymupdf
 
