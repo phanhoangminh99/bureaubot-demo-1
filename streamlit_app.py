@@ -5,7 +5,7 @@ import pathlib
 import json
 import textwrap
 
-import fitz                 # PyMuPDF
+import fitz                    # PyMuPDF
 import streamlit as st
 import google.generativeai as genai
 
@@ -34,16 +34,18 @@ def parse_pdf(form_key: str) -> str:
 
 def llm_select_form(case_info: str) -> str:
     """
-    Ask Gemini which of our 4 form-keys the user scenario requires.
-    Returns one of: eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299
+    Ask Gemini which of our 4 form‐keys the user scenario requires.
+    Returns exactly one of: eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299
     """
     prompt = textwrap.dedent(f"""
         You are an expert in US government forms.
-        User scenario: "{case_info}"
-        Reply with exactly one of: eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299
+        User scenario:
+        "{case_info}"
+        Reply **only** with one of:
+        eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299
     """).strip()
 
-    resp = genai.ChatCompletion.create(
+    resp = genai.chat.completions.create(
         model="chat-bison-001",
         messages=[{"author": "system", "content": prompt}]
     )
@@ -56,18 +58,18 @@ def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
     """
     meta = fetch_meta(form_key)
     prompt = textwrap.dedent(f"""
-        You are a CBP/EOIR/ICE/USCIS form-filling expert.
-        
+        You are a CBP/EOIR/ICE/USCIS form‐filling expert.
+
         FORM METADATA:
         {meta}
-        
+
         USER SCENARIO:
         {case_info}
-        
+
         Return a JSON object mapping each form field name to the exact value.
     """).strip()
 
-    resp = genai.ChatCompletion.create(
+    resp = genai.chat.completions.create(
         model="chat-bison-001",
         messages=[{"author": "system", "content": prompt}]
     )
@@ -103,7 +105,7 @@ def handle_user_message(msg: str) -> str:
       2) confirm_form  → ask user to confirm filling that form
       3) complete      → fill PDF and show download
     """
-    st.session_state.history.append({"role": "user", "content": msg})
+    st.session_state.history.append({"role":"user", "content":msg})
     stage = st.session_state.stage
 
     # 1) User describes situation
@@ -119,7 +121,7 @@ def handle_user_message(msg: str) -> str:
 
     # 2) User confirms or denies
     if stage == "confirm_form":
-        if msg.lower().strip() in ("yes", "y", "sure", "please"):
+        if msg.lower().strip() in ("yes","y","sure","please"):
             st.session_state.stage = "complete"
             st.session_state.answers = llm_build_pdf_payload(
                 st.session_state.form_key,
@@ -139,26 +141,25 @@ def handle_user_message(msg: str) -> str:
 
 # ─── 4) Streamlit UI ────────────────────────────────────────────────────────────
 
-# Initialize session
 if "history" not in st.session_state:
-    st.session_state.history   = [
-        {"role": "assistant", "content": "📝 Hi! How can I help you today?"}
+    st.session_state.history    = [
+        {"role":"assistant","content":"📝 Hi! How can I help you today?"}
     ]
-    st.session_state.stage     = "ask_context"
-    st.session_state.form_key  = None
-    st.session_state.case_info = ""
-    st.session_state.answers   = {}
+    st.session_state.stage      = "ask_context"
+    st.session_state.form_key   = None
+    st.session_state.case_info  = ""
+    st.session_state.answers    = {}
 
-st.title("BureauBot Demo")
+st.title("🛠️ BureauBot Demo")
 
-# Render chat history
+# Render the chat history
 for m in st.session_state.history:
     st.chat_message(m["role"]).write(m["content"])
 
 # Accept new input
 if user_msg := st.chat_input("Your message…"):
     reply = handle_user_message(user_msg)
-    st.session_state.history.append({"role": "assistant", "content": reply})
+    st.session_state.history.append({"role":"assistant","content":reply})
     st.chat_message("assistant").write(reply)
 
     # Once complete, show download button
