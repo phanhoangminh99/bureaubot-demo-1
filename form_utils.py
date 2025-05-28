@@ -15,15 +15,12 @@
 # +
 import json
 from google.cloud import storage
-from google import genai
+import google.generativeai as genai
 from google.genai import types
 import pathlib
 import fitz
-
-import json, re, time
-import streamlit as st
-import google.generativeai as genai
 import json, re, time, textwrap
+import streamlit as st
 
 def llm_build_pdf_payload(form_key: str, user_block: str, tries: int = 3) -> dict:
     meta_json = fetch_meta(form_key)
