@@ -100,7 +100,6 @@ def llm_select_form(case_info: str) -> str:
     return "NONE"
     return result
 
-
 # ─── 5) Build PDF payload ──────────────────────────────────────────────────────
 
 def parse_pdf(form_key: str) -> str:
