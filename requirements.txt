@@ -1,4 +1,4 @@
 streamlit
-pymupdf==1.22.5
-requests
+openai
+PyMuPDF
 
