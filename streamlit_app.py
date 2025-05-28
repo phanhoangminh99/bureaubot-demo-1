@@ -1,88 +1,101 @@
 import streamlit as st
 import json
 import os
-import re
-import time
-import google.generativeai as genai
 
-# ——— Configuration ———
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-SUPPORTED_FORMS = [
-    "eoir_form_26",
-    "uscis_form_ar11",
-    "ice_form_i246",
-    "cbp_form_3299",
-]
-
-# ——— Helpers (inlined) ———
+# --- In-memory metadata loading from local JSON files ---
 def fetch_meta(form_key: str) -> dict:
     path = f"{form_key}_meta.json"
     if os.path.exists(path):
-        # Load the JSON string from disk, then parse it into a dict
-        raw = open(path, "r", encoding="utf-8").read()
-        return json.loads(raw)
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
     return {"questions": []}
 
-def parse_pdf(form_key: str) -> str:
-    """Stub—skip actual PDF parsing for demo."""
-    return f"(PDF text for {form_key} skipped)"
+# --- Simple rule-based form suggestion (demo) ---
+def suggest_form(user_input: str) -> str:
+    text = user_input.lower()
+    if "appeal" in text or "deport" in text:
+        return "eoir_form_26"
+    if "address" in text or "move" in text:
+        return "uscis_form_ar11"
+    if "stay" in text or "stay" in text and "deport" in text:
+        return "ice_form_i246"
+    if "bring" in text or "goods" in text or "personal effects" in text:
+        return "cbp_form_3299"
+    return None
 
-def call_gemini(system_prompt: str, user_prompt: str) -> str:
-    """Call Gemini and return raw text."""
-    prompt = system_prompt.strip() + "\n\n" + user_prompt.strip()
-    model = genai.GenerativeModel("gemini-pro")
-    return model.generate_content(prompt).text.strip()
+# --- Build JSON payload directly from answers ---
+def build_payload(form_key: str, answers: dict) -> dict:
+    # Only include non-empty answers
+    return {k: v for k, v in answers.items() if v}
 
-def llm_build_pdf_payload(form_key: str, user_block: str, tries: int = 3) -> dict:
-    """Build the filled JSON payload."""
-    meta = fetch_meta(form_key)
-    pdf_text = parse_pdf(form_key)
-    base_prompt = f"""
-You are a form-filling expert.
-
-Form metadata:
-{json.dumps(meta)}
-
-Form text:
-{pdf_text}
-
-User answers:
-\"\"\"{user_block}\"\"\"
-
-Return exactly one JSON object mapping each metadata 'name' to the user's answer. Omit any unanswered fields.
-"""
-    for i in range(tries):
-        raw = call_gemini("", base_prompt)
-        raw = re.sub(r"^[`]{3}json|[`]{3}$", "", raw, flags=re.I).strip()
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            time.sleep(0.5)
-    raise ValueError("Failed to parse JSON from LLM response.")
-
-# ——— Streamlit App ———
-st.set_page_config(page_title="Immigration Form Assistant")
+# --- Streamlit UI ---
+st.set_page_config(page_title="Immigration Form Assistant Demo")
 st.title("📝 Immigration Form Assistant (Demo)")
 
-# 1) Select form
-form_key = st.selectbox("Choose a form:", SUPPORTED_FORMS)
+# Chat-like interface using session state
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "form_key" not in st.session_state:
+    st.session_state.form_key = None
+if "answers" not in st.session_state:
+    st.session_state.answers = {}
+if "current_q" not in st.session_state:
+    st.session_state.current_q = 0
+if "questions" not in st.session_state:
+    st.session_state.questions = []
 
-# 2) Load questions and collect answers
-meta = fetch_meta(form_key)
-st.subheader("Please answer the following:")
-answers = {}
-for q in meta.get("questions", []):
-    answers[q["name"]] = st.text_input(q["prompt"])
+# Display chat history
+def show_chat():
+    for role, msg in st.session_state.messages:
+        with st.chat_message(role):
+            st.markdown(msg)
 
-# 3) Generate output
-if st.button("Generate Filled JSON"):
-    user_block = "\n".join(f"{k}: {v}" for k, v in answers.items() if v)
-    result = llm_build_pdf_payload(form_key, user_block)
-    st.subheader("Here’s your filled form data:")
-    st.json(result)
-    st.download_button(
-        "Download JSON",
-        data=json.dumps(result, indent=2),
-        file_name=f"{form_key}_filled.json",
-        mime="application/json",
-    )
+show_chat()
+
+# User input
+user_input = st.chat_input("Type here...")
+if user_input:
+    # Add user message
+    st.session_state.messages.append(("user", user_input))
+
+    # If form not yet chosen, suggest
+    if st.session_state.form_key is None:
+        form = suggest_form(user_input)
+        if form:
+            st.session_state.form_key = form
+            meta = fetch_meta(form)
+            st.session_state.questions = meta.get("questions", [])
+            st.session_state.messages.append(("bot", f"Great! We’ll fill **{form}**. {st.session_state.questions[0]['prompt']}"))
+        else:
+            st.session_state.messages.append(("bot", "Sorry, I couldn’t find a matching form. Try explaining your need differently."))
+    else:
+        # We're filling questions one by one
+        idx = st.session_state.current_q
+        # record answer to previous question
+        if idx < len(st.session_state.questions):
+            field = st.session_state.questions[idx]
+            st.session_state.answers[field['name']] = user_input
+            st.session_state.current_q += 1
+
+        # next question or finish
+        if st.session_state.current_q < len(st.session_state.questions):
+            next_q = st.session_state.questions[st.session_state.current_q]['prompt']
+            st.session_state.messages.append(("bot", next_q))
+        else:
+            # All questions answered
+            payload = build_payload(st.session_state.form_key, st.session_state.answers)
+            st.session_state.messages.append(("bot", "All done! Here’s your filled form data:"))
+            st.session_state.messages.append(("bot", json.dumps(payload, indent=2)))
+            # Reset for new session
+            st.session_state.form_key = None
+            st.session_state.current_q = 0
+            st.session_state.answers = {}
+            st.session_state.questions = []
+
+    # Rerun to display new messages
+    st.experimental_rerun()
+
+# If no messages yet, show greeting
+if not st.session_state.messages:
+    st.session_state.messages.append(("bot", "👋 Hi! Tell me what you need help with — e.g., appeal a deportation order, change your address, request a stay, or import personal effects."))
+    st.experimental_rerun()
