@@ -99,7 +99,7 @@ User case description:
 Which of these form_keys is most appropriate? {SUPPORTED_FORMS}
 Reply ONLY with the form_key.
 """
-    return call_llm(prompt).strip()
+    return call_gemini("", prompt).strip()
 
 st.set_page_config(page_title="Form Assistant")
 
