@@ -16,10 +16,11 @@ SUPPORTED_FORMS = [
 
 # ——— Helpers (inlined) ———
 def fetch_meta(form_key: str) -> dict:
-    """Load metadata from local JSON file."""
     path = f"{form_key}_meta.json"
     if os.path.exists(path):
-        return json.loads(open(path, "r", encoding="utf-8").read())
+        # Load the JSON string from disk, then parse it into a dict
+        raw = open(path, "r", encoding="utf-8").read()
+        return json.loads(raw)
     return {"questions": []}
 
 def parse_pdf(form_key: str) -> str:
