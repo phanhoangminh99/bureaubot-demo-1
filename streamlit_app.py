@@ -1,151 +1,176 @@
-# streamlit_app.py
+# app.py
+# aaa
 
 import streamlit as st
-import fitz          # PyMuPDF
-import io
-import json
-from pathlib import Path
-from huggingface_hub import InferenceApi, login
+import time, json, re, textwrap, pathlib
+import fitz
+from google.cloud import storage
+from google import genai
+from google.genai import types
+import os
+from google.auth.credentials import AnonymousCredentials
+# from google.genai.client import ClientOptions
+import google.generativeai as genai
+api_key = os.environ.get("GOOGLE_API_KEY")
+genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
-# ─── 1. PAGE SETUP ───────────────────────────────────────────────────────────────
-st.set_page_config(page_title="Legal Chat & Form Bot", layout="wide")
-st.header("🗂️ Legal Chat & Form Bot")
+# —————— 配置參數 ——————
+PROJECT_ID = "adsp-34002-ip07-the-four-musk"
+LOCATION   = "us-central1"
+MODEL      = "gemini-2.0-flash"
+BUCKET     = "adsp-bureaubot-bucket"
 
-# ─── 2. LOAD FORMS + METADATA ────────────────────────────────────────────────────
-FORM_DIR = Path("forms")
-FORM_METADATA = {}
-for pdf in FORM_DIR.glob("*.pdf"):
-    key = pdf.stem
-    meta = FORM_DIR / f"{key}_meta.json"
-    if meta.exists():
-        spec = json.loads(meta.read_text())
-        FORM_METADATA[key] = {
-            "pdf": str(pdf),
-            "title": spec.get("title", key),
-            "fields": spec["fields"],
-        }
+SYSTEM_PROMPT = """You are a file filling expert with 30 years experience, extremely detail-oriented.
+You help user choose CBP/USCIS/EOIR/ICE forms, list required fields, and guide them to fill.
+"""
 
-FALLBACK_LINK = "https://www.uscis.gov/forms"
+PROMPT_SELECT_FORM = """
+Here is the user’s case description:
+\"\"\"{case_info}\"\"\"
+from only eoir_form_26, uscis_form_ar11, ice_form_i246, and cbp_form_3299
+Which form should the user fill?
+reply only the form_key (e.g. cbp_form_101)
+"""
 
-# ─── 3. HUGGING FACE ZERO-SHOT CLIENT ─────────────────────────────────────────────
-hf_token = st.secrets.get("HF_TOKEN", "")
-if not hf_token:
-    hf_token = st.text_input("Hugging Face API Token", type="password")
-if not hf_token:
-    st.stop()
+PROMPT_LIST_FIELDS = """
+This is the metadata JSON for form {form_key}:
+{meta_json}
+This is the text parsed from the form {form_key}:
+{pdf_text}
+From this metadata and pdf text, which fields must the user fill?
+…
+Reply directly to user, with only human readable field names.
+"""
 
-login(token=hf_token)
+# —————— 工具函式 ——————
+def fetch_meta(form_key: str) -> str:
+    return pathlib.Path(f"{form_key}_meta.json").read_text(encoding="utf-8")
 
-@st.cache_resource
-def get_zs_client():
-    return InferenceApi(repo_id="facebook/bart-large-mnli", token=hf_token)
+def parse_pdf(form_key: str) -> str:
+    doc = fitz.open(f"{form_key}.pdf")
+    txt = "".join([p.get_text() for p in doc])
+    doc.close()
+    return txt
 
-zs_client = get_zs_client()
+def call_gemini(system_prompt: str, user_prompt: str) -> str:
+    combined = system_prompt.strip() + "\n\n" + user_prompt.strip()
+    # client = genai.Client(vertexai=True, project=PROJECT_ID, location=LOCATION)
+    # client = genai.Client(
+    # credentials=AnonymousCredentials(),
+    # client_options=ClientOptions(api_key=api_key),
+    # project=PROJECT_ID,
+    # location=LOCATION,
+    # )
+    # contents = [ types.Content(role="user", parts=[types.Part(text=combined)]) ]
+    # cfg = types.GenerateContentConfig(
+    #     temperature=0.2, top_p=0.8, max_output_tokens=2040,
+    #     response_modalities=["TEXT"],
+    #     safety_settings=[
+    #         types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"),
+    #         # … 其他設定 …
+    #     ],
+    # )
+    # stream = client.models.generate_content_stream(model=MODEL, contents=contents, config=cfg)
+    model = genai.GenerativeModel("gemini-1.5-flash")  # 你也可以改成 gemini-pro
 
-# ─── 4. ZERO-SHOT FORM SELECTOR ───────────────────────────────────────────────────
-def select_form_key(situation: str, threshold: float = 0.3) -> str:
-    labels = list(FORM_METADATA.keys())
-    try:
-        payload = {
-            "inputs": situation,
-            "parameters": {
-                "candidate_labels": labels,
-                "multi_label": False
-            }
-        }
-        # single-arg call
-        response = zs_client(payload)
-        # response is {"labels": [...], "scores": [...]}
-        top_label = response["labels"][0]
-        top_score = response["scores"][0]
-        if top_score >= threshold:
-            return top_label
-    except Exception as e:
-        st.warning(f"Zero-shot API error: {e}")
-    return "none"
+    response = model.generate_content(combined)
 
-# ─── 5. PDF-FILLER ───────────────────────────────────────────────────────────────
-def fill_pdf_bytes(form_key, answers):
-    meta = FORM_METADATA.get(form_key)
-    if not meta:
-        return None
-    doc = fitz.open(meta["pdf"])
-    page = doc[0]
-    for fld in meta["fields"]:
-        val = answers.get(fld["name"], "")
-        if not val:
-            continue
-        x, y = fld["rect"][:2]
-        page.insert_text((x, y), val, fontsize=12)
-    buf = io.BytesIO()
-    doc.save(buf)
-    return buf.getvalue()
+    return response.text.strip()
+    # return "".join(ch.text for ch in stream).strip()
 
-# ─── 6. STREAMLIT CHAT STATE ────────────────────────────────────────────────────
+def llm_build_pdf_payload(form_key: str, user_block: str, tries: int = 3) -> dict:
+    meta_json = fetch_meta(form_key)
+    pdf_text = parse_pdf(form_key)
+    base = textwrap.dedent(f"""
+        You are a CBP/EOIR/USCIS/ICE-form-filling expert.
+        Form metadata:
+        {meta_json}
+        Form text:
+        {pdf_text}
+        User answers:
+        \"\"\"{user_block}\"\"\"
+        TASK
+        ----
+        Return ONE JSON object…
+    """)
+    for i in range(tries):
+        raw = call_gemini(SYSTEM_PROMPT, base)
+        clean = re.sub(r"^[`]{3}json|[`]{3}$", "", raw, flags=re.I).strip()
+        try:
+            return json.loads(clean)
+        except json.JSONDecodeError:
+            time.sleep(0.5)
+    st.error("Failed to parse JSON from LLM.")
+    return {}
+
+# —————— Session State ——————
+if "stage" not in st.session_state:
+    st.session_state.stage     = "select_form"
+    st.session_state.case_info = ""
+    st.session_state.form_key  = ""
+    st.session_state.answers   = {}
+
+# —————— Streamlit UI ——————
+st.title("🗂️ Form-Filling Assistant")
+
+# 歷史訊息顯示
 if "history" not in st.session_state:
-    st.session_state.history = [
-        {"role": "bot", "content": "Hi! Describe your situation and I’ll find the right form."}
-    ]
-    st.session_state.form_key = None
-    st.session_state.filled   = False
+    st.session_state.history = []
 
-# render conversation
 for msg in st.session_state.history:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
+    speaker = "You" if msg["role"]=="user" else "Bot"
+    st.write(f"**{speaker}:** {msg['text']}")
 
-# handle new user message
-if user_msg := st.chat_input("…"):
-    # echo user
-    st.session_state.history.append({"role": "user", "content": user_msg})
-    with st.chat_message("user"):
-        st.markdown(user_msg)
+# 使用者輸入
+user_input = st.text_input("Your message:", key="inp")
+if st.button("Send") and user_input:
+    # 顯示使用者訊息
+    st.session_state.history.append({"role":"user", "text":user_input})
 
-    # Step A: select form
-    if st.session_state.form_key is None:
-        st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
-        with st.chat_message("bot"):
-            st.markdown("Let me find the right form…")
+    # 呼叫後端
+    reply = ""
+    # 選表單階段
+    if st.session_state.stage == "select_form":
+        st.session_state.case_info += "\n" + user_input
+        prompt = PROMPT_SELECT_FORM.format(case_info=st.session_state.case_info)
+        fk = call_gemini(SYSTEM_PROMPT, prompt)
+        st.session_state.form_key = fk
+        st.session_state.stage = "confirm_form"
+        reply = f"I think you need to fill: **{fk}**. Confirm? (yes/no)"
 
-        key = select_form_key(user_msg)
-        if key == "none":
-            bot = (
-                "Sorry, I couldn’t confidently pick a demo form.\n\n"
-                f"Browse all USCIS forms here: [USCIS Forms]({FALLBACK_LINK})\n\n"
-                "Try another question or adjust your wording."
-            )
+    # 確認階段
+    elif st.session_state.stage == "confirm_form":
+        if user_input.lower().startswith("y"):
+            st.session_state.stage = "list_fields"
+            reply = "Great—let me list the fields."
         else:
-            st.session_state.form_key = key
-            bot = f"I’ve selected **{FORM_METADATA[key]['title']}**. Let’s fill it out—please answer the fields."
+            st.session_state.stage = "select_form"
+            st.session_state.case_info = ""
+            reply = "Okay, describe your case again."
 
-        st.session_state.history.append({"role":"bot","content":bot})
-        st.chat_message("bot").markdown(bot)
+    # 列欄位階段
+    elif st.session_state.stage == "list_fields":
+        meta = fetch_meta(st.session_state.form_key)
+        pdf  = parse_pdf(st.session_state.form_key)
+        prompt = PROMPT_LIST_FIELDS.format(
+            form_key=st.session_state.form_key,
+            meta_json=meta, pdf_text=pdf
+        )
+        reply = call_gemini(SYSTEM_PROMPT, prompt)
+        st.session_state.stage = "await_bulk_answers"
 
-    # Step B: prompt & fill fields
-    elif not st.session_state.filled:
-        meta = FORM_METADATA[st.session_state.form_key]
-        answers = {}
-        st.markdown("### 📝 Please fill these fields:")
-        for fld in meta["fields"]:
-            answers[fld["name"]] = st.text_input(fld["prompt"], key=fld["name"])
-        if st.button("Generate Filled PDF"):
-            pdf_bytes = fill_pdf_bytes(st.session_state.form_key, answers)
-            if pdf_bytes:
-                st.session_state.history.append({"role":"bot","content":"Here’s your filled form:"})
-                with st.chat_message("bot"):
-                    st.download_button(
-                        "📄 Download PDF",
-                        data=pdf_bytes,
-                        file_name=f"{st.session_state.form_key}_filled.pdf",
-                        mime="application/pdf"
-                    )
-                st.session_state.filled = True
-            else:
-                st.error("Error generating PDF.")
+    # 填寫欄位階段
+    elif st.session_state.stage == "await_bulk_answers":
+        payload = llm_build_pdf_payload(st.session_state.form_key, user_input)
+        if payload:
+            st.session_state.answers = payload
+            st.session_state.stage = "complete"
+            reply = "✅ All set! Your form is filled."
+        else:
+            reply = "Sorry, could not parse your answers. Try again?"
 
-    # Step C: done
     else:
-        done = "✅ Done! Refresh to start again."
-        st.session_state.history.append({"role":"bot","content":done})
-        with st.chat_message("bot"):
-            st.markdown(done)
+        reply = "Session completed. Refresh to start over."
+
+    st.session_state.history.append({"role":"bot", "text":reply})
+    st.experimental_rerun()
