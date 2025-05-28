@@ -1,3 +1,5 @@
+pip install google-genai
+
 import os
 import pathlib
 import json
