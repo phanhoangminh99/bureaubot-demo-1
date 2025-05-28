@@ -1,4 +1,2 @@
 streamlit
-google-cloud-storage
 google-generativeai
-PyMuPDF
