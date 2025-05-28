@@ -11,7 +11,7 @@ import requests
 
 # ─── 1) Configuration ─────────────────────────────────────────────────────────
 
-# Your Hugging Face API token must be set in Streamlit Secrets as HF_TOKEN
+# Hugging Face token in Streamlit Cloud → Settings → Secrets as HF_TOKEN
 HF_TOKEN = st.secrets["HF_TOKEN"]
 
 # Use an open‐access instruction‐tuned model
@@ -35,9 +35,9 @@ FORM_KEYS = [
     "cbp_form_3299"
 ]
 
-# Preload all four meta JSONs
+# Preload all four meta JSONs from repo root
 ALL_METAS = {
-    key: pathlib.Path("data", f"{key}_meta.json").read_text()
+    key: pathlib.Path(f"{key}_meta.json").read_text()
     for key in FORM_KEYS
 }
 
@@ -53,10 +53,9 @@ def call_huggingface(prompt: str, max_tokens: int = 256) -> str:
             "temperature": 0.2
         }
     }
-    response = requests.post(HF_API_URL, headers=HEADERS, json=payload)
-    response.raise_for_status()
-    # Expecting a list of generations
-    data = response.json()
+    resp = requests.post(HF_API_URL, headers=HEADERS, json=payload)
+    resp.raise_for_status()
+    data = resp.json()
     return data[0]["generated_text"].strip()
 
 
@@ -85,7 +84,7 @@ def llm_select_form(case_info: str) -> str:
     """).strip()
 
     result = call_huggingface(prompt, max_tokens=32)
-    result = result.split()[0].strip()  # take first token
+    result = result.split()[0].strip()  # only first token
     if result in FORM_KEYS or result == "NONE":
         return result
     return "NONE"
@@ -93,26 +92,23 @@ def llm_select_form(case_info: str) -> str:
 
 # ─── 5) Build PDF payload ──────────────────────────────────────────────────────
 
-def fetch_meta(form_key: str) -> str:
-    return ALL_METAS[form_key]
-
 def parse_pdf(form_key: str) -> str:
-    path = pathlib.Path("data", f"{form_key}.pdf")
+    path = pathlib.Path(f"{form_key}.pdf")
     doc = fitz.open(str(path))
     text = "".join(page.get_text() for page in doc)
     doc.close()
     return text
 
 def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
-    meta = fetch_meta(form_key)
+    meta = ALL_METAS[form_key]
     pdf_text = parse_pdf(form_key)
     prompt = textwrap.dedent(f"""
-        You are a CBP/EOIR/ICE/USCIS form-filling expert.
+        You are a CBP/EOIR/ICE/USCIS form‐filling expert.
 
         FORM METADATA:
         {meta}
 
-        PDF TEXT (truncated):
+        PDF TEXT (first 1000 chars):
         {pdf_text[:1000]}…
 
         USER SCENARIO:
@@ -126,7 +122,7 @@ def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
 
 
 def fill_pdf(form_key: str, answers: dict) -> pathlib.Path:
-    in_path  = pathlib.Path("data", f"{form_key}.pdf")
+    in_path  = pathlib.Path(f"{form_key}.pdf")
     out_path = pathlib.Path("output", f"{form_key}_filled.pdf")
     doc = fitz.open(str(in_path))
 
@@ -179,9 +175,9 @@ def handle_user_message(msg: str) -> str:
     if stage == "end_unsupported":
         return "If you need anything else, just let me know!"
 
-    # 4) Complete: nothing to say, download button will appear
+    # 4) Complete: final message (download button appears below)
     if stage == "complete":
-        return "Your form is ready! Please download using the button below."
+        return "Your form is ready! Please download it below."
 
     return "🤖 Oops, I got lost. Please refresh the page."
 
@@ -209,7 +205,7 @@ if user_msg := st.chat_input("Your message…"):
     st.session_state.history.append({"role":"assistant","content":reply})
     st.chat_message("assistant").write(reply)
 
-    # When complete, show download
+    # Once complete, offer download
     if st.session_state.stage == "complete":
         out_pdf = fill_pdf(st.session_state.form_key, st.session_state.answers)
         with open(out_pdf, "rb") as f:
