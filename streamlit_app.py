@@ -19,6 +19,8 @@ HEADERS = {
 # ─── HUGGING FACE CALL ────────────────────────────────
 
 def call_huggingface(prompt, max_tokens=256):
+    import logging
+
     payload = {
         "inputs": prompt,
         "parameters": {
@@ -30,15 +32,14 @@ def call_huggingface(prompt, max_tokens=256):
 
     response = requests.post(HF_API_URL, headers=HEADERS, json=payload)
 
-    # Always show response code + raw response in Streamlit
-    st.info(f"🛰️ Response Status Code: {response.status_code}")
-    st.code(response.text, language="json")
+    # Log everything
+    logging.warning(f"[HF STATUS] {response.status_code}")
+    logging.warning(f"[HF RESPONSE TEXT] {response.text}")
 
     try:
         return response.json()[0]["generated_text"].strip()
-    except Exception as e:
-        raise RuntimeError("❌ Hugging Face API did not return JSON.")
-
+    except Exception:
+        raise RuntimeError("❌ Hugging Face API returned non-JSON. Check Streamlit logs.")
 
 # ─── FORM FUNCTIONS ───────────────────────────────────
 
