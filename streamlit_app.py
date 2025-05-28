@@ -4,7 +4,7 @@ import os
 import google.generativeai as genai
 
 # ——— Configuration ———
-st.set_page_config(page_title="BureauBot")
+st.set_page_config(page_title="Immigration Form Demo")
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 # ——— Supported forms ———
