@@ -116,3 +116,14 @@ if user_msg := st.chat_input("…"):
                 "📄 Download PDF",
                 data=pdf_bytes,
                 file_name=f"{st.session_state.form_key}_filled.pdf",
+                mime="application/pdf"
+            )
+            st.session_state.filled = True
+
+    # 6c. Free‐form Q&A
+    else:
+        convo = "\n".join(f"{m['role'].upper()}: {m['content']}" for m in st.session_state.history)
+        prompt = convo + "\nBOT:"
+        reply = llm_generate(prompt)
+        st.session_state.history.append({"role":"bot","content":reply})
+        st.chat_message("bot").markdown(reply)
