@@ -75,36 +75,44 @@ def call_huggingface(prompt: str, max_tokens: int = 256) -> str:
 
 def llm_select_form(case_info: str) -> str:
     """
-    Return one of FORM_KEYS if the case matches, or "NONE" otherwise.
+    Rule‐based + LLM hybrid:
+      1) If they mention address, go straight to AR11.
+      2) Else run the LLM on the four metas.
+      3) If LLM misfires, return NONE.
     """
-    catalog = "\n\n".join(
-        f"---\nForm `{key}` metadata:\n```json\n{ALL_METAS[key]}\n```"
-        for key in FORM_KEYS
-    )
+    ci = case_info.lower()
 
+    # 1) RULE: address change → USCIS AR-11
+    if "address" in ci or "change address" in ci:
+        return "uscis_form_ar11"
+
+    # 2) RULE: unaccompanied articles → CBP 3299
+    if "unaccompanied" in ci and "article" in ci:
+        return "cbp_form_3299"
+
+    # 3) FALLBACK TO LLM classification
+    catalog = "\n\n".join(
+        f"---\nForm `{k}` metadata:\n```json\n{ALL_METAS[k]}\n```"
+        for k in FORM_KEYS
+    )
     prompt = textwrap.dedent(f"""
         You are an expert on U.S. government forms. I have exactly four forms:
 
         {catalog}
 
-        If the user’s scenario clearly matches one of these forms,
-        reply with the exact form key (one of: {', '.join(FORM_KEYS)}).
-        Otherwise reply with ONLY: NONE
+        Given this user scenario, reply with the exact form key (one of: {', '.join(FORM_KEYS)}).
+        If none apply, reply ONLY with NONE.
 
-        User scenario:
+        Scenario:
         \"\"\"{case_info}\"\"\"
     """).strip()
 
-    # Call the model
-    result = call_huggingface(prompt, max_tokens=32)
-    # Take only the first word/token
-    result = result.split()[0].strip()
+    result = call_huggingface(prompt, max_tokens=16).split()[0].strip()
 
-    # Fallback if the model errored or returned something unexpected
-    if result == "ERROR" or result not in FORM_KEYS + ["NONE"]:
-        return "NONE"
-
-    return result
+    # 4) SANITIZE: ensure it’s valid
+    if result in FORM_KEYS or result == "NONE":
+        return result
+    return "NONE"
 
 # ─── 5) Build PDF payload ──────────────────────────────────────────────────────
 
