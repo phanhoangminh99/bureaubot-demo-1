@@ -11,7 +11,7 @@ from huggingface_hub import InferenceApi, login
 st.set_page_config(page_title="Legal Chat & Form Bot", layout="wide")
 st.header("🗂️ Legal Chat & Form Bot")
 
-# ─── 2. LOAD FORMS + METADATA ──────────────────────────────────────────────────
+# ─── 2. LOAD YOUR FORMS + METADATA ──────────────────────────────────────────────
 FORM_DIR = Path("forms")
 FORM_KEYS = [p.stem for p in FORM_DIR.glob("*.pdf")]
 FORM_METADATA = {}
@@ -34,7 +34,7 @@ if not hf_token:
 if not hf_token:
     st.stop()
 
-login(token=hf_token)  # store it
+login(token=hf_token)  # authenticate once
 
 @st.cache_resource
 def get_inference_client():
@@ -42,13 +42,12 @@ def get_inference_client():
 
 client = get_inference_client()
 
-# ─── 4. LLM + FALLBACK LOGIC ───────────────────────────────────────────────────
+# ─── 4. LLM & FALLBACK HELPERS ─────────────────────────────────────────────────
 def llm_generate(prompt: str) -> str:
     try:
-        # ask for the raw_response so we can parse text/plain
         out = client(inputs=prompt, raw_response=True)
-        body = out.content.decode("utf-8")  # raw bytes → str
-        return body.strip().splitlines()[0]  # take the first line
+        text = out.content.decode("utf-8").splitlines()[0]
+        return text.strip()
     except Exception as e:
         st.warning(f"LLM API error: {e}")
         return ""
@@ -61,7 +60,6 @@ def select_form_key_via_llm(situation: str) -> str:
         f"Reply with exactly one form key from [{choices}], or 'none'."
     )
     resp = llm_generate(prompt)
-    # sanitize: strip punctuation/spaces, lowercase
     return resp.strip().lower().strip(" .,'\"")
 
 def select_form_key_keyword(situation: str) -> str:
@@ -87,8 +85,7 @@ def fill_pdf_bytes(form_key, answers):
     doc = fitz.open(FORM_METADATA[form_key]["pdf"])
     page = doc[0]
     for fld in FORM_METADATA[form_key]["fields"]:
-        name = fld["name"]
-        val  = answers.get(name, "")
+        val = answers.get(fld["name"], "")
         if not val:
             continue
         x, y = fld["rect"][:2]
@@ -97,7 +94,7 @@ def fill_pdf_bytes(form_key, answers):
     doc.save(buf)
     return buf.getvalue()
 
-# ─── 6. STREAMLIT CHAT ─────────────────────────────────────────────────────────
+# ─── 6. STREAMLIT CHAT STATE ───────────────────────────────────────────────────
 if "history" not in st.session_state:
     st.session_state.history = [
         {"role":"bot", "content":"Hi! Describe your situation and I’ll find the right form."}
@@ -105,31 +102,40 @@ if "history" not in st.session_state:
     st.session_state.form_key = None
     st.session_state.filled   = False
 
+# render chat history
 for msg in st.session_state.history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
+# handle user input
 if user_msg := st.chat_input("…"):
     st.session_state.history.append({"role":"user","content":user_msg})
 
-    # a) pick form
+    # a) auto-select form
     if st.session_state.form_key is None:
         st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
         picked = select_form_key(user_msg)
-        if picked == "none":
-            bot = (
-                "I couldn’t match a demo form.  Browse all USCIS forms here:\n\n"
-                f"[USCIS Forms]({FALLBACK_LINK})\n\n"
-                "Feel free to ask me other legal questions."
+
+        # guard against unknown keys
+        if picked not in FORM_METADATA or picked == "none":
+            if picked != "none":
+                st.warning(f"LLM returned unknown key '{picked}', using keyword fallback.")
+            bot_text = (
+                "Sorry, I don’t have that form in my demo.  "
+                f"Browse all USCIS forms here: [USCIS Forms]({FALLBACK_LINK})\n\n"
+                "You can still ask me other legal questions."
             )
+            st.session_state.history.append({"role":"bot","content":bot_text})
+            st.chat_message("bot").markdown(bot_text)
         else:
+            # once valid, store and prompt next
             st.session_state.form_key = picked
             title = FORM_METADATA[picked]["title"]
-            bot = f"I think **{title}** is it—let’s fill it out. I’ll ask each field."
-        st.session_state.history.append({"role":"bot","content":bot})
-        st.chat_message("bot").markdown(bot)
+            bot_text = f"I think **{title}** is right—let’s fill it out.  I’ll ask each field."
+            st.session_state.history.append({"role":"bot","content":bot_text})
+            st.chat_message("bot").markdown(bot_text)
 
-    # b) fill fields
+    # b) collect & fill
     elif not st.session_state.filled:
         spec = FORM_METADATA[st.session_state.form_key]
         answers = {}
