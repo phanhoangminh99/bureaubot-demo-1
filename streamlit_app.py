@@ -95,9 +95,15 @@ def llm_select_form(case_info: str) -> str:
         \"\"\"{case_info}\"\"\"
     """).strip()
 
+    # Call the model
+    result = call_huggingface(prompt, max_tokens=32)
+    # Take only the first word/token
     result = result.split()[0].strip()
+
+    # Fallback if the model errored or returned something unexpected
     if result == "ERROR" or result not in FORM_KEYS + ["NONE"]:
-    return "NONE"
+        return "NONE"
+
     return result
 
 # ─── 5) Build PDF payload ──────────────────────────────────────────────────────
