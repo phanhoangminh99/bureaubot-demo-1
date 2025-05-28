@@ -5,130 +5,55 @@ import pathlib
 import json
 import textwrap
 
-import fitz           # PyMuPDF
+import fitz                 # PyMuPDF
 import streamlit as st
 import google.generativeai as genai
 
 # ─── 1) Setup ───────────────────────────────────────────────────────────────────
 
-# Make sure output directory exists
 os.makedirs("output", exist_ok=True)
-
-# Configure Gemini API key
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 
-# ─── 2) PDF & LLM Helpers ───────────────────────────────────────────────────────
+# ─── 2) Helpers ─────────────────────────────────────────────────────────────────
 
 def fetch_meta(form_key: str) -> str:
-    path = pathlib.Path("data") / f"{form_key}_meta.json"
-    return path.read_text()
+    return pathlib.Path("data", f"{form_key}_meta.json").read_text()
 
 def parse_pdf(form_key: str) -> str:
-    path = pathlib.Path("data") / f"{form_key}.pdf"
-    doc = fitz.open(str(path))
-    text = "".join(page.get_text() for page in doc)
+    doc = fitz.open(str(pathlib.Path("data", f"{form_key}.pdf")))
+    text = "".join(p.get_text() for p in doc)
     doc.close()
     return text
 
-def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
-    meta_json = fetch_meta(form_key)
-    pdf_text = parse_pdf(form_key)
+def llm_select_form(case_info: str) -> str:
+    """Ask Gemini which of our 4 keys the user needs."""
     prompt = textwrap.dedent(f"""
-        You are a CBP/EOIR/ICE/USCIS form-filling expert.
-        Here is the form metadata:
-        {meta_json}
-
-        Here is the user's description of their case:
-        {case_info}
-
-        Return a JSON object mapping each form field name to the exact value.
+        You're an expert in US government forms.
+        User scenario: "{case_info}"
+        Reply **only** with one of:
+        eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299
     """).strip()
-
     resp = genai.chat.completions.create(
         model="chat-bison-001",
-        messages=[{"author": "system", "content": prompt}]
+        messages=[{"author":"system","content":prompt}]
     )
-    filled = resp.choices[0].message.content
-    return json.loads(filled)
+    return resp.choices[0].message.content.strip()
 
-def fill_pdf(form_key: str, answers: dict) -> pathlib.Path:
-    in_path = pathlib.Path("data") / f"{form_key}.pdf"
-    out_path = pathlib.Path("output") / f"{form_key}_filled.pdf"
-    doc = fitz.open(str(in_path))
+def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
+    meta = fetch_meta(form_key)
+    prompt = textwrap.dedent(f"""
+        You are a CBP/EOIR/ICE/USCIS form-filling expert.
+        FORM METADATA:
+        {meta}
 
-    for page in doc:
-        for widget in page.widgets() or []:
-            name = widget.field_name
-            if name in answers:
-                widget.field_value = str(answers[name])
-                widget.update()
+        USER SCENARIO:
+        {case_info}
 
-    doc.save(str(out_path), deflate=True)
-    doc.close()
-    return out_path
-
-
-# ─── 3) Chat Orchestration ─────────────────────────────────────────────────────
-
-def handle_user_message(user_msg: str) -> str:
-    stage = st.session_state.stage
-
-    if stage == "select_form":
-        key = user_msg.strip()
-        valid = {"eoir_form_26", "uscis_form_ar11", "ice_form_i246", "cbp_form_3299"}
-        if key in valid:
-            st.session_state.form_key = key
-            st.session_state.stage = "fill_info"
-            return f"✅ `{key}` selected. Please describe your situation so I can fill the form."
-        else:
-            return "❌ Sorry, I only support those four forms. Try one of: eoir_form_26, uscis_form_ar11, ice_form_i246, cbp_form_3299."
-
-    elif stage == "fill_info":
-        st.session_state.case_info = user_msg
-        st.session_state.stage = "complete"
-        st.session_state.answers = llm_build_pdf_payload(
-            st.session_state.form_key,
-            st.session_state.case_info
-        )
-        return "🛠️ Got it! Building your filled form now…"
-
-    return "🤖 Oops, something went wrong. Please refresh the page."
-
-
-# ─── 4) Streamlit UI ───────────────────────────────────────────────────────────
-
-# Initialize chat state
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content":
-         "📝 Hi! Which form would you like to fill? Options: "
-         "`eoir_form_26`, `uscis_form_ar11`, `ice_form_i246`, `cbp_form_3299`"}
-    ]
-    st.session_state.stage = "select_form"
-    st.session_state.form_key = None
-    st.session_state.case_info = ""
-    st.session_state.answers = {}
-
-st.title("🛠️ Form-Filling Bot")
-
-# Render chat history
-for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
-
-# Handle new user input
-if user_input := st.chat_input("Your message…"):
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    reply = handle_user_message(user_input)
-    st.session_state.messages.append({"role": "assistant", "content": reply})
-    st.chat_message("assistant").write(reply)
-
-    # If we've reached completion, show download button
-    if st.session_state.stage == "complete":
-        out_pdf = fill_pdf(st.session_state.form_key, st.session_state.answers)
-        with open(out_pdf, "rb") as f:
-            st.download_button(
-                label="📥 Download filled PDF",
-                data=f,
-                file_name=out_pdf.name
-            )
+        Return a **JSON** mapping each form field to its value.
+    """).strip()
+    resp = genai.chat.completions.create(
+        model="chat-bison-001",
+        messages=[{"author":"system","content":prompt}]
+    )
+    return json.loads(res
