@@ -126,4 +126,8 @@ if user_msg := st.chat_input("…"):
 
     # 6c. Free-form legal Q&A
     else:
-        convo = "\n".join(f"{m['role']
+        convo = "\n".join(f"{m['role'].upper()}: {m['content']}" for m in st.session_state.history)
+        prompt = convo + "\nBOT:"
+        reply = llm_generate(prompt)
+        st.session_state.history.append({"role":"bot","content":reply})
+        st.chat_message("bot").markdown(reply)
