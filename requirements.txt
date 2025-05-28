@@ -1,4 +1,4 @@
 streamlit
 PyMuPDF
-transformers
+huggingface_hub
 
