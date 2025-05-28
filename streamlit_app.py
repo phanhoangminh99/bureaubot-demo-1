@@ -1,3 +1,5 @@
+# streamlit_app.py
+
 import streamlit as st
 import fitz         # PyMuPDF
 import io
@@ -5,11 +7,11 @@ import json
 from pathlib import Path
 from transformers import pipeline
 
-# 1. APP CONFIG
+# ─── 1. APP CONFIG ─────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Legal Chat & Form Bot", layout="wide")
 st.header("🗂️ Legal Chat & Form Bot")
 
-# 2. LOAD YOUR FORMS + METADATA
+# ─── 2. LOAD YOUR FORMS + METADATA ──────────────────────────────────────────────
 FORM_DIR = Path("forms")
 FORM_KEYS = [p.stem for p in FORM_DIR.glob("*.pdf")]
 FORM_METADATA = {}
@@ -26,34 +28,36 @@ for key in FORM_KEYS:
 
 FALLBACK_LINK = "https://www.uscis.gov/forms"
 
-# 3. LOAD A PUBLIC HF MODEL
+# ─── 3. LOAD A PUBLIC HF MODEL ──────────────────────────────────────────────────
 @st.cache_resource
 def get_llm():
+    # Smaller model to fit in CPU‐only environments
     return pipeline(
         "text2text-generation",
-        model="google/flan-t5-base",
-        device=-1  # CPU
+        model="google/flan-t5-small",
+        device=-1,
+        max_length=128
     )
 
 llm = get_llm()
 
-# 4. LLM HELPERS
+# ─── 4. LLM HELPERS ─────────────────────────────────────────────────────────────
 def llm_generate(prompt: str) -> str:
-    out = llm(prompt, max_length=256, do_sample=False)[0]["generated_text"]
+    out = llm(prompt, max_length=128, do_sample=False)[0]["generated_text"]
     return out.strip()
 
 def select_form_key(situation: str) -> str:
     choices = ", ".join(FORM_METADATA.keys())
     prompt = (
         f"You are a legal intake assistant.\n"
-        f"User situation:\n{situation}\n"
+        f"User situation:\n{situation}\n\n"
         f"Based on the above, reply with exactly one form key from [{choices}], "
         f"or 'none' if no match."
     )
     resp = llm_generate(prompt)
     return resp.split()[0]
 
-# 5. PDF-FILLER
+# ─── 5. PDF-FILLER ─────────────────────────────────────────────────────────────
 def fill_pdf_bytes(form_key, answers):
     doc = fitz.open(FORM_METADATA[form_key]["pdf"])
     page = doc[0]
@@ -68,7 +72,7 @@ def fill_pdf_bytes(form_key, answers):
     doc.save(buf)
     return buf.getvalue()
 
-# 6. STREAMLIT CHAT STATE
+# ─── 6. STREAMLIT CHAT STATE ───────────────────────────────────────────────────
 if "history" not in st.session_state:
     st.session_state.history = [
         {"role":"bot", "content":"Hi there! Describe your situation and I’ll find the right form."}
@@ -76,16 +80,16 @@ if "history" not in st.session_state:
     st.session_state.form_key = None
     st.session_state.filled   = False
 
-# Render chat
+# Render the chat history
 for msg in st.session_state.history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Handle new user input
+# Handle new user messages
 if user_msg := st.chat_input("…"):
     st.session_state.history.append({"role":"user","content":user_msg})
 
-    # 6a. Auto‐select form
+    # 6a. Auto-select form
     if st.session_state.form_key is None:
         st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
         form_key = select_form_key(user_msg)
@@ -102,7 +106,7 @@ if user_msg := st.chat_input("…"):
         st.session_state.history.append({"role":"bot","content":bot_txt})
         st.chat_message("bot").markdown(bot_txt)
 
-    # 6b. Collect & fill
+    # 6b. Collect & fill fields
     elif not st.session_state.filled:
         spec = FORM_METADATA[st.session_state.form_key]
         answers = {}
@@ -111,7 +115,7 @@ if user_msg := st.chat_input("…"):
             answers[fld["name"]] = st.text_input(fld["prompt"], key=fld["name"])
         if st.button("Generate Filled PDF"):
             pdf_bytes = fill_pdf_bytes(st.session_state.form_key, answers)
-            st.session_state.history.append({"role":"bot","content":"Here's your filled form:"})
+            st.session_state.history.append({"role":"bot","content":"Here’s your filled form:"})
             st.chat_message("bot").download_button(
                 "📄 Download PDF",
                 data=pdf_bytes,
@@ -120,10 +124,6 @@ if user_msg := st.chat_input("…"):
             )
             st.session_state.filled = True
 
-    # 6c. Free‐form Q&A
+    # 6c. Free-form legal Q&A
     else:
-        convo = "\n".join(f"{m['role'].upper()}: {m['content']}" for m in st.session_state.history)
-        prompt = convo + "\nBOT:"
-        reply = llm_generate(prompt)
-        st.session_state.history.append({"role":"bot","content":reply})
-        st.chat_message("bot").markdown(reply)
+        convo = "\n".join(f"{m['role']
