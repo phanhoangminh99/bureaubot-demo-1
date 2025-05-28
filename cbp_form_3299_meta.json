@@ -1,0 +1,981 @@
+[
+  {
+    "page": 1,
+    "name": "F[0].P1[0].is[0]",
+    "label": "PART 2 - TO BE COMPLETED BY ALL PERSONS EXCEPT U.S. PERSONNEL AND EVACUEES. 9. I declare that my place of residence abroad IS.",
+    "rect": [
+      193.2530059814453,
+      354.0050048828125,
+      203.2530059814453,
+      364.0050048828125
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].was[0]",
+    "label": "9. I declare that my place of residence abroad WAS.",
+    "rect": [
+      229.2530059814453,
+      354.0050048828125,
+      239.2530059814453,
+      364.0050048828125
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ReturningResidentUS[0]",
+    "label": "9. C. RESIDENCY STATUS UPON MY / OUR ARRIVAL (\"X\" One). (1) Returning resident of the U S.",
+    "rect": [
+      25.2549991607666,
+      377.2690124511719,
+      35.255001068115234,
+      387.2690124511719
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].EmigratingToTheUS[0]",
+    "label": "9. C. 2. A. Nonresident. Emigrating to the U S.",
+    "rect": [
+      247.2530059814453,
+      377.2690124511719,
+      257.25299072265625,
+      387.2690124511719
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].VisitingTheUS[0]",
+    "label": "9. C. 2 B. Nonresident. Visiting the U S.",
+    "rect": [
+      367.25201416015625,
+      377.2690124511719,
+      377.25201416015625,
+      387.2690124511719
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxC1[0]",
+    "label": "10. C. 1. All household effects acquired abroad for which free entry is sought     were used abroad for at least one year by me or my family in a household of which I or my family was a resident member during such period of use, and are not intended for any other person or for sale.   (9804.00.05, H T S U S A.)",
+    "rect": [
+      319.25299072265625,
+      415.4800109863281,
+      329.25299072265625,
+      425.4800109863281
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA1[0]",
+    "label": "10. STATEMENT(S) OF ELIGIBILITY FOR FREE ENTRY OF ARTICLES. I the undersigned further declare that (\"X\" all applicable items and submit packing list). A. Applicable to RESIDENT and NONRESIDENT. 1. All household effects acquired abroad for which free entry is sought were used abroad for at least one year by me or my family in a household of which I or my family was a resident member during such period of use, and are not intended for any other person or for sale.  (9804.00.05,  H T S U S A.)",
+    "rect": [
+      25.25200080871582,
+      415.4800109863281,
+      35.25199890136719,
+      425.4800109863281
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA1[1]",
+    "label": "10. A. 2. All instruments, implements, or tools of trade, occupation or employment, and all professional books for which free entry is sought were taken abroad by me or for my account or I am an emigrant who owned and used them abroad.  (9804.00.10,9804.00.15, H T S U S A.)",
+    "rect": [
+      25.25200080871582,
+      457.4809875488281,
+      35.25199890136719,
+      467.4809875488281
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxC2[0]",
+    "label": "10. C. 2. Any vehicles, trailers, bicycles or other means of conveyance being       imported are for the transport of me and my family and such incident a carriage of articles as are appropriate to my personal use of the conveyance.  (9804.00.35, H T S U S A.)",
+    "rect": [
+      319.25299072265625,
+      457.4809875488281,
+      329.25299072265625,
+      467.4809875488281
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxB1[0]",
+    "label": "10. B. All personal effects for which free entry is sought were taken abroad by me or for my account. (9804.00.45, H T S U S A.)",
+    "rect": [
+      25.25200080871582,
+      505.4800109863281,
+      35.25199890136719,
+      515.47998046875
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA1a[0]",
+    "label": "PART FOUR - TO BE COMPLETED BY ALL PERSONS SEEKING FREE ENTRY OF ARTICLES  (Certain articles may be subject to duty and/or other requirements and must be specifically declared herein.  Please check all applicable items and list them separately in item D on the reverse.)  A.  For U.S. Personnel, Evacuees, Residents and Non-Residents. 1.  Articles for the account of other person.",
+    "rect": [
+      25.25200080871582,
+      673.4810180664062,
+      35.25199890136719,
+      683.4810180664062
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA3a[0]",
+    "label": "A. 3.  Firearms and/or ammunition.",
+    "rect": [
+      25.2549991607666,
+      697.22998046875,
+      35.255001068115234,
+      707.22998046875
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA5a[0]",
+    "label": "A.  5.  Fruits, plants, seeds, meats, or birds.",
+    "rect": [
+      25.2549991607666,
+      719.7369995117188,
+      35.255001068115234,
+      729.7369995117188
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA2a[0]",
+    "label": "A. 2.  Articles for sale or commercial use.",
+    "rect": [
+      151.2550048828125,
+      673.2490234375,
+      161.2550048828125,
+      683.2490234375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA4a[0]",
+    "label": "A. 4.  Alcoholic articles of all types or tobacco products.",
+    "rect": [
+      151.2550048828125,
+      697.22998046875,
+      161.2550048828125,
+      707.22998046875
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxA6a[0]",
+    "label": "A. 6.  Fish, wildlife, animal products thereof.",
+    "rect": [
+      151.2550048828125,
+      719.7369995117188,
+      161.2550048828125,
+      729.7369995117188
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxB7[0]",
+    "label": "B.  7.  Foreign household effects acquired abroad and used less than one year.",
+    "rect": [
+      289.62200927734375,
+      673.4810180664062,
+      299.62200927734375,
+      683.4810180664062
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxB8[0]",
+    "label": "B.  8.  Foreign household effects acquired abroad and used more than one year.",
+    "rect": [
+      439.25201416015625,
+      673.4810180664062,
+      449.25201416015625,
+      683.4810180664062
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxC9[0]",
+    "label": "C.  9.  Personal effects acquired abroad.",
+    "rect": [
+      289.2539978027344,
+      708.625,
+      299.2539978027344,
+      718.625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxC10[0]",
+    "label": "C. 10.  Foreign made articles acquired in the United States and taken abroad on this trip or acquired abroad on another trip that was previously declared to C B P.",
+    "rect": [
+      289.2539978027344,
+      721.47998046875,
+      299.2539978027344,
+      731.47998046875
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].CheckBoxC11[0]",
+    "label": "C.  11.  Articles taken abroad for which alterations or repairs were performed abroad. ",
+    "rect": [
+      289.2539978027344,
+      745.4810180664062,
+      299.2539978027344,
+      755.4810180664062
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportersName[0]",
+    "label": "PART 1 - TO BE COMPLETED BY ALL PERSONS SEEKING FREE ENTRY OF ARTICLES  (Please consult with the C B P official for additional information or assistance.  REMEMBER -- All of your statements are subject to verification.  False declarations or failure to declare articles could result in penalties.) 1.  Importer's Name (Last, first and middle). Last name.",
+    "rect": [
+      24.000999450683594,
+      162.0,
+      155.99899291992188,
+      173.9990234375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportersUSAddress[0]",
+    "label": "4. Importer's U S Address.",
+    "rect": [
+      24.000999450683594,
+      185.99798583984375,
+      306.0,
+      222.0009765625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportersDateOfBirth[0]",
+    "label": "2. Importer's Date of Birth. Enter 2-digit month, 2-digit day and 4-digit year.  ",
+    "rect": [
+      317.9989929199219,
+      162.0,
+      443.9989929199219,
+      173.9990234375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportersDateOfArrival[0]",
+    "label": "3. Importer's Date of Arrival. Enter 2-digit month, 2-digit day and 4-digit year. ",
+    "rect": [
+      456.0010070800781,
+      162.0,
+      587.9990234375,
+      173.9990234375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportersPortOfArrival[0]",
+    "label": "5. Importer's Port of Arrival.",
+    "rect": [
+      317.9989929199219,
+      185.99798583984375,
+      587.9990234375,
+      197.99700927734375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].NameOfArrivingVessel[0]",
+    "label": "6. Name of arriving vessel carrier and flight / train.",
+    "rect": [
+      317.9989929199219,
+      209.9990234375,
+      587.9990234375,
+      221.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].NamesOfHousehold[0]",
+    "label": "7. NAME(S) OF ACCOMPANYING HOUSEHOLD MEMBERS (wife, husband, minor children, etcetera).",
+    "rect": [
+      24.000999450683594,
+      234.0,
+      587.9990234375,
+      258.0009765625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportedBelongingsDate[0]",
+    "label": "8. THE ARTICLES FOR WHICH FREE ENTRY IS CLAIMED BELONG TO ME AND / OR MY FAMILY AND WERE IMPORTED. A. Date. Enter 2-digit month, 2-digit day and 4-digit year.",
+    "rect": [
+      180.0,
+      281.9989929199219,
+      245.6219940185547,
+      293.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].NameOfVesselCarrier[0]",
+    "label": "8. B. Name of Vessel / Carrier.",
+    "rect": [
+      258.0010070800781,
+      281.9989929199219,
+      378.0,
+      293.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].FromCountry[0]",
+    "label": "8. C. From (Country).",
+    "rect": [
+      389.9989929199219,
+      281.9989929199219,
+      479.9989929199219,
+      293.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].BLorAWBorIT_Number[0]",
+    "label": "8. D. B / L or. A. W B or I T Number.",
+    "rect": [
+      492.0010070800781,
+      281.9989929199219,
+      587.9990234375,
+      293.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].NumberOfContainers[0]",
+    "label": "8. E. Number and kinds of containers.",
+    "rect": [
+      24.000999450683594,
+      306.0,
+      245.99899291992188,
+      330.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].Marks_Numbers[0]",
+    "label": "8. F. Marks and Numbers.",
+    "rect": [
+      258.0010070800781,
+      306.0,
+      587.9990234375,
+      330.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].NameOfCountry[0]",
+    "label": "9. A. Name of Country.",
+    "rect": [
+      294.0010070800781,
+      353.9989929199219,
+      438.0010070800781,
+      365.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].DateOfImportersLast[0]",
+    "label": "1. Date of importer's last departure from the U S. Enter 2-digit month, 2-digit day and 4-digit year.",
+    "rect": [
+      24.000999450683594,
+      618.0009765625,
+      119.24500274658203,
+      630.0
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].DateOrdersIssued[0]",
+    "label": "2. A COPY OF THE IMPORTER'S TRAVEL ORDERS IS ATTACHED AND THE ORDERS  WERE ISSUED ON. Date orders issued on. Enter 2-digit month, 2-digit day and 4-digit year.",
+    "rect": [
+      245.99899291992188,
+      618.0009765625,
+      341.2550048828125,
+      630.0
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].LengthOfTime_Year[0]",
+    "label": "9. B. Length of time. Year.",
+    "rect": [
+      450.0,
+      353.9989929199219,
+      479.9989929199219,
+      365.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].LengthOfTime_Month[0]",
+    "label": "9. B. Length of time. Month.",
+    "rect": [
+      510.0010070800781,
+      353.9989929199219,
+      540.0,
+      365.99798583984375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportersName[1]",
+    "label": "1. Importer's Name. First name.",
+    "rect": [
+      162.0,
+      162.0,
+      276.0010070800781,
+      173.9990234375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "F[0].P1[0].ImportersName[2]",
+    "label": "1. Importer's Name. Middle initial.",
+    "rect": [
+      281.9989929199219,
+      162.0,
+      306.0,
+      173.9990234375
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].A_AuthorizedAgent[0]",
+    "label": "PART 6 - CERTIFICATION TO BE COMPLETED BY ALL PERSONS SEEKING FREE ENTRY.  I, the undersigned, certify that this declaration is correct and complete. 1. \"X\" One. A.  Authorized Agent (From facts obtained from the importer).",
+    "rect": [
+      25.25200080871582,
+      655.4810180664062,
+      35.25199890136719,
+      665.4810180664062
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].B_Importer[0]",
+    "label": "1. B. Importer.",
+    "rect": [
+      277.25201416015625,
+      655.4810180664062,
+      287.25201416015625,
+      665.4810180664062
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise1[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line 1 of 9.  ",
+    "rect": [
+      126.0,
+      78.0009765625,
+      299.9989929199219,
+      125.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise1[0]",
+    "label": "4. FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line 1 of 9.  ",
+    "rect": [
+      384.0010070800781,
+      78.0009765625,
+      587.9990234375,
+      125.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].NameOfCarrier[0]",
+    "label": "PART 5 - CARRIER'S CERTIFICATE AND RELEASE ORDER. The undersigned carrier, to whom of upon whose order the articles described in PART I, 8., must be released, hereby certifies that the person named in Part I, 1., is the owner or consignee of such articles within the purview of section 4 84 (h), Tariff Act of 19 30. In accordance with provisions of section 4 84(h), Tariff Act of 19 30, authority is hereby given to release the articles to such consignee. 1. Name of Carrier.",
+    "rect": [
+      24.000999450683594,
+      582.0009765625,
+      281.9989929199219,
+      618.0009765625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].SignatureOfAgent[0]",
+    "label": "2. Signature of Agent. This signature field can not be signed with a digital signature and the signee's name can not be typewritten into this space. This is a protected field. Sign in ink.",
+    "rect": [
+      317.9989929199219,
+      595.7689819335938,
+      510.0010070800781,
+      613.7689819335938
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].Date[0]",
+    "label": "2. Signature Date. Enter 2-digit month, 2-digit day and 4-digit year. ",
+    "rect": [
+      515.9990234375,
+      606.0020141601562,
+      589.5130004882812,
+      618.0009765625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].PersonSeekingFreeEntrySignature[0]",
+    "label": "2. Signature (Sign in ink). This signature field can not be signed with a digital signature and the signee's name can not be typewritten into this space. This is a protected field. Print and sign in ink. *An Authorized Agent is defined as a person who has actual knowledge of the facts and who is specifically empowered under a power of attorney to execute this declaration (see 19 C F R 1 41.19, 1 41.32, 1 41.33).",
+    "rect": [
+      24.000999450683594,
+      681.905029296875,
+      271.89898681640625,
+      702.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DateFreeEntrySignature[0]",
+    "label": "3. Date of Signature. Enter 2-digit month, 2-digit day and 4-digit year. ",
+    "rect": [
+      384.0010070800781,
+      690.0009765625,
+      463.489013671875,
+      702.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].SignatureOfCBP_Official[0]",
+    "label": "PART 7 - C B P USE ONLY (Inspected and Released). 1. Signature of C B P Official (Sign in ink).  This signature field can not be signed with a digital signature and the signee's name can not be typewritten into this space. This is a protected field. Print and sign in ink.",
+    "rect": [
+      191.99899291992188,
+      744.0009765625,
+      443.9989929199219,
+      756.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DateOfSignature[0]",
+    "label": "2. Date of Signature. Enter 2-digit month, 2-digit day and 4-digit year.",
+    "rect": [
+      456.0010070800781,
+      744.0009765625,
+      551.9990234375,
+      756.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber1[0]",
+    "label": "D. List of articles. 1. ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line  1 of 9.",
+    "rect": [
+      24.000999450683594,
+      78.0009765625,
+      114.74700164794922,
+      125.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value1[0]",
+    "label": "3. Value of cost of repairs. Line 1 of 9.  ",
+    "rect": [
+      312.0010070800781,
+      114.0009765625,
+      371.9989929199219,
+      126.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber2[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line  2 of 9.",
+    "rect": [
+      24.000999450683594,
+      132.0009765625,
+      114.74700164794922,
+      179.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber3[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line  3 of 9.",
+    "rect": [
+      24.000999450683594,
+      186.0009765625,
+      114.0009994506836,
+      227.00201416015625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber4[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line 4 of 9.",
+    "rect": [
+      24.000999450683594,
+      234.0,
+      114.0009994506836,
+      275.0009765625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber5[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line 5 of 9.",
+    "rect": [
+      24.000999450683594,
+      282.00201416015625,
+      114.0009994506836,
+      323.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber6[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line 6 of 9.",
+    "rect": [
+      24.000999450683594,
+      330.0010070800781,
+      114.0009994506836,
+      371.00201416015625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber7[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line 7 of 9.",
+    "rect": [
+      24.000999450683594,
+      378.0,
+      114.0009994506836,
+      419.0010070800781
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber8[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line  8 of 9.",
+    "rect": [
+      24.000999450683594,
+      426.00201416015625,
+      114.0009994506836,
+      467.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].itemnumber9[0]",
+    "label": "D.  List of articles. 1.  ITEM NUMBER      CHECKED IN PART FOUR, A., B., C.  Line  9 of 9",
+    "rect": [
+      24.000999450683594,
+      474.0010070800781,
+      114.0009994506836,
+      515.0020141601562
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise2[0]",
+    "label": "4.  FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line  2 of 9.",
+    "rect": [
+      384.0010070800781,
+      132.0009765625,
+      587.9990234375,
+      179.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value2[0]",
+    "label": "3. Value of cost of repairs. Line  2 of 9.",
+    "rect": [
+      312.0010070800781,
+      168.0009765625,
+      371.9989929199219,
+      180.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise2[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line  2 of 9.  ",
+    "rect": [
+      126.0,
+      132.0009765625,
+      299.9989929199219,
+      179.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise3[0]",
+    "label": "4. FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.   Line  3 of 9.",
+    "rect": [
+      384.0010070800781,
+      186.0009765625,
+      587.9990234375,
+      227.00201416015625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value3[0]",
+    "label": "3. Value of cost of repairs.  Line  3 of 9.",
+    "rect": [
+      312.0010070800781,
+      216.0,
+      371.9989929199219,
+      227.9990234375
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise3[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE.  Line  3 of 9.  ",
+    "rect": [
+      125.26300048828125,
+      186.0009765625,
+      299.9989929199219,
+      227.00201416015625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise4[0]",
+    "label": "4. FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line 4 of 9.",
+    "rect": [
+      384.0010070800781,
+      234.0,
+      587.9990234375,
+      275.0009765625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value4[0]",
+    "label": "3. Value of cost of repairs. Line 4 of 9.",
+    "rect": [
+      312.0010070800781,
+      263.9990234375,
+      371.9989929199219,
+      275.99798583984375
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise4[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line 4 of 9.  ",
+    "rect": [
+      125.26300048828125,
+      234.15899658203125,
+      299.9989929199219,
+      275.0009765625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise5[0]",
+    "label": "4.  FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line 5 of 9.",
+    "rect": [
+      384.0010070800781,
+      282.00201416015625,
+      587.9990234375,
+      323.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value5[0]",
+    "label": "3. Value of cost of repairs. Line 5 of 9.",
+    "rect": [
+      312.0010070800781,
+      312.0010070800781,
+      371.9989929199219,
+      324.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise5[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line 5 of 9.  ",
+    "rect": [
+      125.26300048828125,
+      282.00201416015625,
+      299.9989929199219,
+      323.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise6[0]",
+    "label": "4.  FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line 6 of 9.",
+    "rect": [
+      384.0010070800781,
+      330.0010070800781,
+      587.9990234375,
+      371.00201416015625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value6[0]",
+    "label": "3. Value of cost of repairs. Line 6 of 9.",
+    "rect": [
+      312.0010070800781,
+      360.0,
+      371.9989929199219,
+      371.9989929199219
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise6[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line 6 of 9.  ",
+    "rect": [
+      125.26300048828125,
+      330.0010070800781,
+      299.9989929199219,
+      371.00201416015625
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise7[0]",
+    "label": "4.  FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line 7 of 9.",
+    "rect": [
+      384.0010070800781,
+      378.0,
+      587.9990234375,
+      419.0010070800781
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value7[0]",
+    "label": "3. Value of cost of repairs. Line 7 of 9.",
+    "rect": [
+      312.0010070800781,
+      407.9989929199219,
+      371.9989929199219,
+      419.99798583984375
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise7[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line 7 of 9.  ",
+    "rect": [
+      126.0,
+      378.0,
+      299.9989929199219,
+      419.0010070800781
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise8[0]",
+    "label": "4.  FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line 8 of 9.",
+    "rect": [
+      384.0010070800781,
+      425.9989929199219,
+      587.9990234375,
+      466.99700927734375
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value8[0]",
+    "label": "3. Value of cost of repairs. Line  8 of 9.",
+    "rect": [
+      312.0010070800781,
+      456.0010070800781,
+      371.9989929199219,
+      468.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise8[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line  8 of 9.  ",
+    "rect": [
+      126.0,
+      426.00201416015625,
+      299.9989929199219,
+      467.0
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].ForeignMerchandise9[0]",
+    "label": "4. FOREIGN MERCHANDISE TAKEN ABROAD THIS TRIP:  State where in the U S  the foreign merchandise was acquired or when and where it was previously declared to C B P.  Line 9 of 9.",
+    "rect": [
+      384.0010070800781,
+      474.0010070800781,
+      587.9990234375,
+      514.9990234375
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].value9[0]",
+    "label": "3. Value of cost of repairs. Line 9 of 9.",
+    "rect": [
+      312.0010070800781,
+      504.0,
+      371.9989929199219,
+      515.9990234375
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].DescriptionOfMerchandise9[0]",
+    "label": "2. DESCRIPTION OF MERCHANDISE. Line 9 of 9.  ",
+    "rect": [
+      126.0,
+      474.0010070800781,
+      299.9989929199219,
+      515.0020141601562
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].SignatureOfAgentPrint[0]",
+    "label": "2. Signature of Agent (Print and sign). Print name. This is a protected field.",
+    "rect": [
+      299.9989929199219,
+      583.5800170898438,
+      402.0010070800781,
+      595.58203125
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].SignatureOfAgentPrint[1]",
+    "label": "2. Signature of Agent (Print and sign). Print name. This is a protected field.",
+    "rect": [
+      405.0,
+      583.5800170898438,
+      522.0,
+      595.58203125
+    ]
+  },
+  {
+    "page": 2,
+    "name": "F[0].P2[0].SignatureOfAgentPrint[2]",
+    "label": "2. Signature of Agent (Print and sign). Print name. This is a protected field.",
+    "rect": [
+      528.0009765625,
+      583.5800170898438,
+      569.9990234375,
+      595.58203125
+    ]
+  }
+]

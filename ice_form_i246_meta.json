@@ -1,0 +1,607 @@
+[
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Dateexp[0]",
+    "label": "Expiration Date. Enter 2 digit month, 2 digit day and 4 digit year.",
+    "rect": [
+      510.0010070800781,
+      276.0040283203125,
+      576.10498046875,
+      288.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Granted[0]",
+    "label": "Granted.",
+    "rect": [
+      39.99800109863281,
+      98.00201416015625,
+      47.99800109863281,
+      106.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].OneYear[0]",
+    "label": "One Year.",
+    "rect": [
+      106.0,
+      98.00201416015625,
+      114.0,
+      106.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].SixMonths[0]",
+    "label": "Six Months.",
+    "rect": [
+      160.0,
+      98.00201416015625,
+      168.0,
+      106.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].ThreeMonths[0]",
+    "label": "Three Months.",
+    "rect": [
+      220.00100708007812,
+      98.00201416015625,
+      228.00100708007812,
+      106.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Other1[0]",
+    "label": "Other.",
+    "rect": [
+      292.0010070800781,
+      98.00201416015625,
+      300.0010070800781,
+      106.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Granted[1]",
+    "label": "Denied.",
+    "rect": [
+      39.99800109863281,
+      110.0009765625,
+      47.99800109863281,
+      118.0009765625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Denialletterattached\\.[0]",
+    "label": "Denial letter attached.",
+    "rect": [
+      106.0,
+      110.0009765625,
+      114.0,
+      118.0009765625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Granted[2]",
+    "label": "Rejected.",
+    "rect": [
+      39.99800109863281,
+      122.0,
+      47.99800109863281,
+      130.0
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].IncorrectFee[0]",
+    "label": "Incorrect Fee.",
+    "rect": [
+      106.0,
+      122.0,
+      114.0,
+      130.0
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Failuretosubmitinperson[0]",
+    "label": "Application was not submitted in person.",
+    "rect": [
+      178.0,
+      122.0,
+      186.0,
+      130.0
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Other2[0]",
+    "label": "Other.",
+    "rect": [
+      340.0,
+      122.0,
+      348.0,
+      130.0
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Additionalinformationattached\\.[0]",
+    "label": "Additional information attached. ",
+    "rect": [
+      39.99800109863281,
+      140.0,
+      47.99800109863281,
+      148.0
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].other1a[0]",
+    "label": "If other, specify.",
+    "rect": [
+      330.0010070800781,
+      96.0009765625,
+      456.0010070800781,
+      108.0
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].other2a[0]",
+    "label": "If other, specify.",
+    "rect": [
+      378.0,
+      120.00201416015625,
+      456.0010070800781,
+      132.0040283203125
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Date1[0]",
+    "label": "Date. Enter 2 digit month, 2 digit day and 4 digit year.",
+    "rect": [
+      60.000999450683594,
+      156.00201416015625,
+      126.0,
+      168.0009765625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].PrintedNameTitle[0]",
+    "label": "Decision made by. Printed Name / Title.",
+    "rect": [
+      204.00100708007812,
+      156.00201416015625,
+      456.0010070800781,
+      168.0040283203125
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].office[0]",
+    "label": "Office.",
+    "rect": [
+      366.0010070800781,
+      186.0009765625,
+      456.0010070800781,
+      198.0
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].filenumber[0]",
+    "label": "A. File Number.",
+    "rect": [
+      36.0,
+      228.00201416015625,
+      180.0,
+      240.0009765625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].facility[0]",
+    "label": "If you are currently detained by I C E , provide the name of the detention facility.",
+    "rect": [
+      281.9989929199219,
+      228.00201416015625,
+      576.0,
+      240.0009765625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].Date2[0]",
+    "label": "Date. Enter 2 digit month, 2 digit day and 4 digit year.",
+    "rect": [
+      191.99899291992188,
+      228.00201416015625,
+      270.0,
+      240.0009765625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].lastnmae[0]",
+    "label": "Last Name.",
+    "rect": [
+      36.0,
+      252.00299072265625,
+      227.99899291992188,
+      264.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].firstname[0]",
+    "label": "First Name.",
+    "rect": [
+      240.00100708007812,
+      252.00299072265625,
+      438.0010070800781,
+      264.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].middlename[0]",
+    "label": "Middle Name.",
+    "rect": [
+      450.0,
+      252.00299072265625,
+      576.0,
+      264.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].AddressNumberandStreet[0]",
+    "label": "Address (Number and Street).",
+    "rect": [
+      36.0,
+      276.0040283203125,
+      299.9989929199219,
+      288.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].CountryofCitizenship[0]",
+    "label": "Country of Citizenship.",
+    "rect": [
+      312.0010070800781,
+      276.0040283203125,
+      402.0010070800781,
+      288.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].PassportNo[0]",
+    "label": "Passport Number.",
+    "rect": [
+      414.0,
+      276.0040283203125,
+      497.9989929199219,
+      288.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].ApartmentNumber[0]",
+    "label": "Apartment Number.",
+    "rect": [
+      36.0,
+      300.00201416015625,
+      299.9989929199219,
+      312.04901123046875
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].oneyear[0]",
+    "label": "Length of stay requested. One Year.",
+    "rect": [
+      315.9989929199219,
+      302.00299072265625,
+      323.9989929199219,
+      310.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].sixmonths[0]",
+    "label": "Six Months.",
+    "rect": [
+      369.9989929199219,
+      302.00299072265625,
+      377.9989929199219,
+      310.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].threemonths[0]",
+    "label": "Three Months.",
+    "rect": [
+      430.0,
+      302.00299072265625,
+      438.0,
+      310.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].onemonth[0]",
+    "label": "Other.",
+    "rect": [
+      502.0,
+      302.00299072265625,
+      510.0,
+      310.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].TownCity[0]",
+    "label": "Town / City.",
+    "rect": [
+      36.0,
+      324.00299072265625,
+      186.00100708007812,
+      336.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].state[0]",
+    "label": "State.",
+    "rect": [
+      198.0,
+      324.00299072265625,
+      227.99899291992188,
+      336.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].zipcode[0]",
+    "label": "Zip Code.",
+    "rect": [
+      240.00100708007812,
+      324.00299072265625,
+      299.9989929199219,
+      336.00201416015625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].yesdoc[0]",
+    "label": "Arrested by police or other law enforcement agency (other than for immigration reasons). Yes - Documents Attached",
+    "rect": [
+      394.0,
+      338.00299072265625,
+      402.0,
+      346.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].nodoc[0]",
+    "label": "No.",
+    "rect": [
+      520.0,
+      338.00299072265625,
+      528.0,
+      346.00299072265625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].teleno[0]",
+    "label": "Telephone Number.",
+    "rect": [
+      36.0,
+      348.0039978027344,
+      162.0,
+      360.0509948730469
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].cellno[0]",
+    "label": "Cell Telephone Number.",
+    "rect": [
+      173.99899291992188,
+      348.0039978027344,
+      299.9989929199219,
+      360.0509948730469
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].medical[0]",
+    "label": "EVIDENCE SUBMITTED (attached). Medical.",
+    "rect": [
+      39.99800109863281,
+      523.9979858398438,
+      47.99800109863281,
+      531.9979858398438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].brief[0]",
+    "label": "Brief.",
+    "rect": [
+      93.99800109863281,
+      523.9979858398438,
+      101.99800109863281,
+      531.9979858398438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].other3[0]",
+    "label": "Other (Specify).",
+    "rect": [
+      135.99899291992188,
+      523.9979858398438,
+      143.99899291992188,
+      531.9979858398438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].spcfy[0]",
+    "label": "If other, specify.",
+    "rect": [
+      36.0,
+      540.0,
+      576.0,
+      551.9990234375
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].printname[0]",
+    "label": "I certify under penalty of perjury that the information provided and contained herein is true and correct to the best of my knowledge and belief. Printed Name.",
+    "rect": [
+      36.0,
+      576.0,
+      263.9989929199219,
+      587.9990234375
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].nameprint[0]",
+    "label": "INFORMATION IF FORM PREPARED BY OTHER THAN APPLICANT. I declare under penalty of law that this document was prepared by me at the request of the applicant and is based on all information of which I have knowledge. I understand that providing false information on behalf of the applicant could result in criminal prosecution and, upon conviction, a fine or imprisonment or both. Printed Name.",
+    "rect": [
+      36.0,
+      677.9990234375,
+      263.9989929199219,
+      689.9979858398438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].telenumber[0]",
+    "label": "Telephone Number.",
+    "rect": [
+      36.0,
+      707.9979858398438,
+      137.99899291992188,
+      719.9970092773438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].streetaddress[0]",
+    "label": "Street Address.",
+    "rect": [
+      150.00100708007812,
+      707.9979858398438,
+      348.0010070800781,
+      719.9970092773438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].city[0]",
+    "label": "City.",
+    "rect": [
+      360.0,
+      707.9979858398438,
+      456.0010070800781,
+      719.9970092773438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].state2[0]",
+    "label": "State.",
+    "rect": [
+      468.0,
+      707.9979858398438,
+      497.9989929199219,
+      719.9970092773438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].zipde[0]",
+    "label": "Zip Code.",
+    "rect": [
+      510.0010070800781,
+      707.9979858398438,
+      576.0,
+      719.9970092773438
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].reasons1[0]",
+    "label": "REASON ( S ) FOR REQUESTING A STAY OF DEPORTATION OR REMOVAL.",
+    "rect": [
+      36.0,
+      395.99700927734375,
+      576.0,
+      485.99700927734375
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].other2abc[0]",
+    "label": "If other, specify.",
+    "rect": [
+      533.9990234375,
+      300.00201416015625,
+      576.0,
+      312.0010070800781
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].SignatureField1[0]",
+    "label": "Signature (Sign in ink). This is a digital signature field.",
+    "rect": [
+      276.0010070800781,
+      672.0009765625,
+      576.0,
+      690.0009765625
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].SignatureField1[1]",
+    "label": "Signature (Sign in ink). This is a digital signature field.",
+    "rect": [
+      276.0010070800781,
+      569.9990234375,
+      576.0,
+      588.0020141601562
+    ]
+  },
+  {
+    "page": 3,
+    "name": "F[0].P3[0].SignatureField1[2]",
+    "label": "Deciding Official Signature (Sign in ink). This is a digital signature field.",
+    "rect": [
+      137.99899291992188,
+      180.0,
+      324.0,
+      198.0
+    ]
+  }
+]

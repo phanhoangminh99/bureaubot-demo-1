@@ -1,0 +1,343 @@
+[
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S1_MiddleName[0]",
+    "label": "Information About You.  Enter Middle Name (if applicable)",
+    "rect": [
+      438.0010070800781,
+      138.0050048828125,
+      576.0,
+      156.0050048828125
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S1_GivenName[0]",
+    "label": "Information About You.  Enter Given Name (First Name)",
+    "rect": [
+      263.9989929199219,
+      138.0050048828125,
+      425.9989929199219,
+      156.0050048828125
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S1_FamilyName[0]",
+    "label": "Information About You.  Enter Family Name (Last Name).",
+    "rect": [
+      36.0,
+      138.0050048828125,
+      252.0,
+      156.0050048828125
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S1_DateOfBirth[0]",
+    "label": "Information About You.  Enter your Date of Birth. Enter the 2 digit month, 2 digit day and 4 digit year.",
+    "rect": [
+      36.0,
+      173.9990234375,
+      167.9980010986328,
+      191.9990234375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B_State[0]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).  Enter the state.  You will be making a selection from the drop down list containing the 2 letter abbreviations of state names.",
+    "rect": [
+      404.0010070800781,
+      300.00201416015625,
+      450.0,
+      318.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B_ZipCode[0]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).  Enter the zip code.",
+    "rect": [
+      461.9989929199219,
+      300.00201416015625,
+      576.0,
+      318.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B__Unit[0]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).   Check this box if the address is an apartment.",
+    "rect": [
+      402.9989929199219,
+      268.00201416015625,
+      412.9989929199219,
+      278.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B_AptSteFlrNumber[0]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).   If you marked the apartment, suite or floor box, enter the number here.",
+    "rect": [
+      461.9989929199219,
+      264.00201416015625,
+      576.0,
+      282.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B__Unit[1]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).  Check this box if the address is a designated floor.",
+    "rect": [
+      439.4989929199219,
+      268.00201416015625,
+      449.4989929199219,
+      278.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B__Unit[2]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).  Check this box if the address is a suite.  ",
+    "rect": [
+      420.9989929199219,
+      268.00201416015625,
+      430.9989929199219,
+      278.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B_StreetNumberName[0]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).  Enter the Street Number and Name.",
+    "rect": [
+      35.99399948120117,
+      264.00201416015625,
+      389.7799987792969,
+      282.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2B_CityOrTown[0]",
+    "label": "Information About Your Address.  Present Physical Address (No P O Boxes).  Enter the City or Town.",
+    "rect": [
+      35.99399948120117,
+      300.00201416015625,
+      389.7799987792969,
+      318.00201416015625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_State[0]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  Enter the state.  You will be making a selection from the drop down list containing the 2 letter abbreviations of state names.",
+    "rect": [
+      404.0069885253906,
+      492.0010070800781,
+      450.0060119628906,
+      510.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_ZipCode[0]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  Enter the zip code.",
+    "rect": [
+      462.0050048828125,
+      492.0010070800781,
+      576.0059814453125,
+      510.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_Unit[0]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  Check this box if the address is an apartment.",
+    "rect": [
+      403.0050048828125,
+      460.0010070800781,
+      413.0050048828125,
+      470.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_AptSteFlrNumber[0]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  If you marked the apartment, suite or floor box, enter the number here.",
+    "rect": [
+      462.0050048828125,
+      456.0010070800781,
+      576.0059814453125,
+      474.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_Unit[1]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  Check this box if the address is a designated floor.",
+    "rect": [
+      439.5050048828125,
+      460.0010070800781,
+      449.5050048828125,
+      470.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_Unit[2]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  Check this box if the address is a suite.  ",
+    "rect": [
+      421.0050048828125,
+      460.0010070800781,
+      431.0050048828125,
+      470.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_StreetNumberName[0]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  Enter the Street Number and Name.",
+    "rect": [
+      36.0,
+      456.0010070800781,
+      389.7860107421875,
+      474.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2C_CityOrTown[0]",
+    "label": "Information About Your Address.  Mailing Address (Optional).  Enter the City or Town.",
+    "rect": [
+      36.0,
+      492.0010070800781,
+      389.7860107421875,
+      510.0010070800781
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].AlienNumber[0]",
+    "label": "Information About You.  Enter your alien registration number or A Number here.",
+    "rect": [
+      203.9980010986328,
+      173.9990234375,
+      342.00799560546875,
+      191.9990234375
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S3_SignatureApplicant[0]",
+    "label": "Your Signature.  Signature of Applicant.  This form can not be signed electronically.  The name of the applicant can not be typewritten into this space.  If the applicant is a minor child, the parent must sign the child's name in this space.  This form will be rejected without a signature in this space.",
+    "rect": [
+      36.0,
+      563.9979858398438,
+      432.0,
+      581.9979858398438
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S3_DateofSignature[0]",
+    "label": "Your Signature.  Date of Signature. Enter the 2 digit month, 2 digit day and 4 digit year.",
+    "rect": [
+      443.9989929199219,
+      563.9979858398438,
+      576.0,
+      581.9979858398438
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_State[0]",
+    "label": "Information About Your Address.  Previous Physical Address.  Enter the state.  You will be making a selection from the drop down list containing the 2 letter abbreviations of state names.",
+    "rect": [
+      404.0039978027344,
+      396.00299072265625,
+      450.00299072265625,
+      414.00299072265625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_ZipCode[0]",
+    "label": "Information About Your Address.  Previous Physical Address.  Enter the zip code.",
+    "rect": [
+      461.9960021972656,
+      396.00299072265625,
+      575.9970092773438,
+      414.00299072265625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_Unit[0]",
+    "label": "Information About Your Address.  Previous Physical Address.  Check this box if the address is an apartment.",
+    "rect": [
+      403.00201416015625,
+      364.00299072265625,
+      413.00201416015625,
+      374.00299072265625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_AptSteFlrNumber[0]",
+    "label": "Information About Your Address.  Previous Physical Address.  If you marked the apartment, suite or floor box, enter the number here.",
+    "rect": [
+      462.00201416015625,
+      360.00299072265625,
+      576.0029907226562,
+      378.00299072265625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_Unit[1]",
+    "label": "Information About Your Address.  Previous Physical Address.  Check this box if the address is a designated floor.",
+    "rect": [
+      439.50201416015625,
+      364.00299072265625,
+      449.50201416015625,
+      374.00299072265625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_Unit[2]",
+    "label": "Information About Your Address.  Previous Physical Address.  Check this box if the address is a suite.  ",
+    "rect": [
+      421.00201416015625,
+      364.00299072265625,
+      431.00201416015625,
+      374.00299072265625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_StreetNumberName[0]",
+    "label": "Information About Your Address.  Previous Physical Address.  Enter the Street Number and Name.",
+    "rect": [
+      35.99700164794922,
+      360.00299072265625,
+      389.7829895019531,
+      378.00299072265625
+    ]
+  },
+  {
+    "page": 1,
+    "name": "form1[0].#subform[0].S2A_CityOrTown[0]",
+    "label": "Information About Your Address.  Previous Physical Address.  Enter the City or Town.",
+    "rect": [
+      36.0,
+      396.0,
+      389.7860107421875,
+      414.0
+    ]
+  }
+]
