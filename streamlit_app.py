@@ -9,7 +9,7 @@ import requests
 # ─── SETUP ────────────────────────────────────────────
 
 HF_TOKEN = st.secrets["HF_TOKEN"]
-HF_API_URL = "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct"
+HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1"
 
 HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}",
