@@ -29,11 +29,16 @@ def call_huggingface(prompt, max_tokens=256):
     }
     response = requests.post(HF_API_URL, headers=HEADERS, json=payload)
 
+    if not response.ok:
+        st.error("🛑 Hugging Face API error:")
+        st.code(response.text)
+        raise RuntimeError("Hugging Face API returned an error")
+
     try:
         return response.json()[0]["generated_text"].strip()
     except Exception as e:
-        st.error("❌ Hugging Face API response was not valid JSON")
-        st.code(response.text)  # Print raw response from HF
+        st.error("❌ Failed to parse Hugging Face response as JSON")
+        st.code(response.text)  # This will show the real problem
         raise e
 
 # ─── FORM FUNCTIONS ───────────────────────────────────
