@@ -1,14 +1,10 @@
-!pip install google-genai
-
 import os
 import pathlib
 import json
 import textwrap
 
-import fitz  # PyMuPDF
+import fitz     # PyMuPDF
 import streamlit as st
-from google import genai
-from google.genai import types
 
 # ─── 1) Setup ───────────────────────────────────────────────────────────────────
 
