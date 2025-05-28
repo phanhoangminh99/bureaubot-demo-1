@@ -19,7 +19,7 @@ Reply ONLY with the form_key.
 """
     return call_gemini("", prompt).strip()
 
-st.set_page_config(page_title="Form Assistant")
+st.set_page_config(page_title="BureauBot")
 
 if "chat" not in st.session_state:
     st.session_state.chat = []
@@ -46,7 +46,7 @@ if user_input := st.chat_input("Tell me what you need help with..."):
             meta = fetch_meta(form)
             st.session_state.fields = meta["questions"]
             st.session_state.stage = "ask_questions"
-            st.session_state.chat.append(("bot", f"I'll help you fill out **{form}**. Let's start!"))
+            st.session_state.chat.append(("bot", f"I'll help you fill out **{form}**. Let's get started!"))
         else:
             st.session_state.chat.append(("bot", "Sorry, I couldn’t match that to a supported form."))
 
@@ -80,4 +80,5 @@ if st.session_state.stage == "ask_questions":
         st.session_state.stage = "done"
 
 elif st.session_state.stage == "done":
-    st.chat_message("bot").markdown("All done! Refresh to start over.")
+    st.chat_message("bot").markdown("All done! Refresh the app to start over.")
+
