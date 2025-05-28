@@ -8,20 +8,20 @@ from pathlib import Path
 
 # ─── 1. PAGE SETUP ───────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Legal Chat & Form Bot", layout="wide")
-st.header("🗂️ Legal Chat & Form Bot (Keyword-Only)")
+st.header("🗂️ Legal Chat & Form Bot (Keyword‐Only, Safe)")
 
 # ─── 2. LOAD FORMS + METADATA ────────────────────────────────────────────────────
 FORM_DIR = Path("forms")
 FORM_METADATA = {}
-for pdf in FORM_DIR.glob("*.pdf"):
-    key = pdf.stem  # e.g. "uscis_form_ar11"
-    meta = FORM_DIR / f"{key}_meta.json"
-    if meta.exists():
-        spec = json.loads(meta.read_text())
+for pdf_path in FORM_DIR.glob("*.pdf"):
+    key = pdf_path.stem  # e.g. "uscis_form_ar11"
+    meta_path = FORM_DIR / f"{key}_meta.json"
+    if meta_path.exists():
+        spec = json.loads(meta_path.read_text())
         FORM_METADATA[key] = {
-            "pdf": str(pdf),
+            "pdf": str(pdf_path),
             "title": spec.get("title", key),
-            "fields": spec["fields"]
+            "fields": spec.get("fields", []),
         }
 
 FALLBACK_LINK = "https://www.uscis.gov/forms"
@@ -41,9 +41,12 @@ def select_form_key(situation: str) -> str:
 
 # ─── 4. PDF‐FILLER ───────────────────────────────────────────────────────────────
 def fill_pdf_bytes(form_key, answers):
-    doc = fitz.open(FORM_METADATA[form_key]["pdf"])
+    meta = FORM_METADATA.get(form_key)
+    if not meta:
+        return None
+    doc = fitz.open(meta["pdf"])
     page = doc[0]
-    for fld in FORM_METADATA[form_key]["fields"]:
+    for fld in meta["fields"]:
         val = answers.get(fld["name"], "")
         if not val:
             continue
@@ -56,31 +59,32 @@ def fill_pdf_bytes(form_key, answers):
 # ─── 5. CHAT STATE ────────────────────────────────────────────────────────────────
 if "history" not in st.session_state:
     st.session_state.history = [
-        {"role": "bot",  "content": "Hi! Describe your situation and I’ll find the right form."}
+        {"role": "bot", "content": "Hi! Describe your situation and I’ll find the right form."}
     ]
     st.session_state.form_key = None
     st.session_state.filled   = False
 
-# render all previous messages
+# Render existing chat
 for msg in st.session_state.history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# new user input
+# Handle new input
 if user_input := st.chat_input("…"):
-    # 1) echo user
-    st.session_state.history.append({"role": "user", "content": user_input})
+    # Echo user
+    st.session_state.history.append({"role":"user","content":user_input})
     with st.chat_message("user"):
         st.markdown(user_input)
 
-    # 2) select form
+    # A) Auto‐select form if not yet chosen
     if st.session_state.form_key is None:
-        st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
-        with st.chat_message("bot"):
-            st.markdown("Let me find the right form…")
+        bot_txt = "Let me find the right form…"
+        st.session_state.history.append({"role":"bot","content":bot_txt})
+        st.chat_message("bot").markdown(bot_txt)
 
         key = select_form_key(user_input)
-        if key == "none":
+        # Guard: only accept if in metadata
+        if key not in FORM_METADATA:
             bot_txt = (
                 "Sorry, I couldn’t match any demo form.  \n\n"
                 f"You can browse all USCIS forms here: [USCIS Forms]({FALLBACK_LINK})\n\n"
@@ -88,34 +92,37 @@ if user_input := st.chat_input("…"):
             )
             st.session_state.history.append({"role":"bot","content":bot_txt})
             st.chat_message("bot").markdown(bot_txt)
-
         else:
             st.session_state.form_key = key
-            title = FORM_METADATA[key]["title"]
+            title = FORM_METADATA[key].get("title", "<Unknown Form>")
             bot_txt = f"I found **{title}**.  Let’s fill it out—please answer the fields."
             st.session_state.history.append({"role":"bot","content":bot_txt})
             st.chat_message("bot").markdown(bot_txt)
 
-    # 3) fill fields (if form selected, before PDF generated)
+    # B) Collect fields & generate PDF
     elif not st.session_state.filled:
-        spec = FORM_METADATA[st.session_state.form_key]
+        meta = FORM_METADATA.get(st.session_state.form_key, {})
+        fields = meta.get("fields", [])
         answers = {}
         st.markdown("### 📝 Please fill these fields:")
-        for fld in spec["fields"]:
+        for fld in fields:
             answers[fld["name"]] = st.text_input(fld["prompt"], key=fld["name"])
         if st.button("Generate Filled PDF"):
-            pdf = fill_pdf_bytes(st.session_state.form_key, answers)
-            st.session_state.history.append({"role":"bot","content":"Here’s your filled form:"})
-            with st.chat_message("bot"):
-                st.download_button(
-                    "📄 Download PDF",
-                    data=pdf,
-                    file_name=f"{st.session_state.form_key}_filled.pdf",
-                    mime="application/pdf"
-                )
-            st.session_state.filled = True
+            pdf_bytes = fill_pdf_bytes(st.session_state.form_key, answers)
+            if pdf_bytes:
+                st.session_state.history.append({"role":"bot","content":"Here’s your filled form:"})
+                with st.chat_message("bot"):
+                    st.download_button(
+                        "📄 Download PDF",
+                        data=pdf_bytes,
+                        file_name=f"{st.session_state.form_key}_filled.pdf",
+                        mime="application/pdf"
+                    )
+                st.session_state.filled = True
+            else:
+                st.error("Could not generate PDF—invalid form key.")
 
-    # 4) done
+    # C) Completed
     else:
         done_txt = "✅ Done! Refresh to start again."
         st.session_state.history.append({"role":"bot","content":done_txt})
