@@ -5,6 +5,8 @@ import textwrap
 
 import fitz     # PyMuPDF
 import streamlit as st
+import google.generativeai as genai
+from google.generativeai.types import ChatCompletionRequestMessage
 
 # ─── 1) Setup ───────────────────────────────────────────────────────────────────
 
