@@ -73,46 +73,38 @@ def call_huggingface(prompt: str, max_tokens: int = 256) -> str:
 
 # ─── 4) Form‐selection using all metas ──────────────────────────────────────────
 
-def llm_select_form(case_info: str) -> str:
+def llm_build_pdf_payload(form_key: str, case_info: str) -> dict:
     """
-    Rule‐based + LLM hybrid:
-      1) If they mention address, go straight to AR11.
-      2) Else run the LLM on the four metas.
-      3) If LLM misfires, return NONE.
+    Use only the metadata JSON + user scenario to build the form payload.
+    This avoids sending the entire PDF text, keeping the prompt small enough
+    for the HF Inference API to handle.
     """
-    ci = case_info.lower()
+    meta = ALL_METAS[form_key]
 
-    # 1) RULE: address change → USCIS AR-11
-    if "address" in ci or "change address" in ci:
-        return "uscis_form_ar11"
-
-    # 2) RULE: unaccompanied articles → CBP 3299
-    if "unaccompanied" in ci and "article" in ci:
-        return "cbp_form_3299"
-
-    # 3) FALLBACK TO LLM classification
-    catalog = "\n\n".join(
-        f"---\nForm `{k}` metadata:\n```json\n{ALL_METAS[k]}\n```"
-        for k in FORM_KEYS
-    )
     prompt = textwrap.dedent(f"""
-        You are an expert on U.S. government forms. I have exactly four forms:
+        You are a CBP/EOIR/ICE/USCIS form-filling expert.
+        
+        Here is the form’s metadata (fields & descriptions):
+        ```json
+        {meta}
+        ```
 
-        {catalog}
-
-        Given this user scenario, reply with the exact form key (one of: {', '.join(FORM_KEYS)}).
-        If none apply, reply ONLY with NONE.
-
-        Scenario:
+        A user has this situation:
         \"\"\"{case_info}\"\"\"
+
+        Please reply with a JSON object that maps each form field name
+        (as given in the metadata) to the exact value the user needs.
     """).strip()
 
-    result = call_huggingface(prompt, max_tokens=16).split()[0].strip()
-
-    # 4) SANITIZE: ensure it’s valid
-    if result in FORM_KEYS or result == "NONE":
-        return result
-    return "NONE"
+    # Call HF with a modest token budget
+    try:
+        reply = call_huggingface(prompt, max_tokens=256)
+        return json.loads(reply)
+    except Exception as e:
+        # If it still fails, show the raw response so we can debug
+        st.error("❌ Failed to generate payload. Raw response:")
+        st.code(str(e))
+        return {}
 
 # ─── 5) Build PDF payload ──────────────────────────────────────────────────────
 
