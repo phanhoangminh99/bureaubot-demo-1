@@ -1,4 +1,4 @@
-pip install google-genai
+!pip install google-genai
 
 import os
 import pathlib
