@@ -5,13 +5,13 @@ import fitz          # PyMuPDF
 import io
 import json
 from pathlib import Path
-from huggingface_hub import InferenceApi, HfApi, HfFolder, login
+from huggingface_hub import InferenceApi, login
 
 # ─── 1. APP CONFIG ─────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Legal Chat & Form Bot", layout="wide")
 st.header("🗂️ Legal Chat & Form Bot")
 
-# ─── 2. LOAD YOUR FORMS + METADATA ──────────────────────────────────────────────
+# ─── 2. LOAD FORMS + METADATA ──────────────────────────────────────────────────
 FORM_DIR = Path("forms")
 FORM_KEYS = [p.stem for p in FORM_DIR.glob("*.pdf")]
 FORM_METADATA = {}
@@ -27,41 +27,31 @@ for key in FORM_KEYS:
 
 FALLBACK_LINK = "https://www.uscis.gov/forms"
 
-# ─── 3. HUGGINGFACE TOKEN & CLIENT ─────────────────────────────────────────────
+# ─── 3. HUGGING FACE CLIENT ─────────────────────────────────────────────────────
 hf_token = st.secrets.get("HF_TOKEN", "")
 if not hf_token:
     hf_token = st.text_input("Hugging Face API Token", type="password")
 if not hf_token:
     st.stop()
 
-# Log in for convenience (stores token)
-login(token=hf_token)
+login(token=hf_token)  # store it
 
-# Create an Inference API client for your chosen model
 @st.cache_resource
 def get_inference_client():
-    # you can swap to a private or larger model here
     return InferenceApi(repo_id="google/flan-t5-small", token=hf_token)
 
-inference_client = get_inference_client()
+client = get_inference_client()
 
-
-# ─── 4. LLM HELPERS ─────────────────────────────────────────────────────────────
+# ─── 4. LLM + FALLBACK LOGIC ───────────────────────────────────────────────────
 def llm_generate(prompt: str) -> str:
-    """
-    Calls HF Inference API to generate text for our prompt.
-    Falls back to returning the prompt if the call errors.
-    """
     try:
-        # Hugging Face Text2Text endpoints expect the prompt as-is
-        output = inference_client(inputs=prompt)
-        # API returns either a string or a dict {"generated_text": ...}
-        if isinstance(output, dict) and "generated_text" in output:
-            return output["generated_text"]
-        return output if isinstance(output, str) else str(output)
+        # ask for the raw_response so we can parse text/plain
+        out = client(inputs=prompt, raw_response=True)
+        body = out.content.decode("utf-8")  # raw bytes → str
+        return body.strip().splitlines()[0]  # take the first line
     except Exception as e:
-        st.warning(f"LLM API call failed: {e}")
-        return prompt  # dumb fallback
+        st.warning(f"LLM API error: {e}")
+        return ""
 
 def select_form_key_via_llm(situation: str) -> str:
     choices = ", ".join(FORM_METADATA.keys())
@@ -71,7 +61,8 @@ def select_form_key_via_llm(situation: str) -> str:
         f"Reply with exactly one form key from [{choices}], or 'none'."
     )
     resp = llm_generate(prompt)
-    return resp.split()[0].lower()
+    # sanitize: strip punctuation/spaces, lowercase
+    return resp.strip().lower().strip(" .,'\"")
 
 def select_form_key_keyword(situation: str) -> str:
     txt = situation.lower()
@@ -87,28 +78,26 @@ def select_form_key_keyword(situation: str) -> str:
 
 def select_form_key(situation: str) -> str:
     key = select_form_key_via_llm(situation)
-    # if LLM picked something we don't have, fallback to keywords
     if key in FORM_METADATA:
         return key
     return select_form_key_keyword(situation)
-
 
 # ─── 5. PDF-FILLER ─────────────────────────────────────────────────────────────
 def fill_pdf_bytes(form_key, answers):
     doc = fitz.open(FORM_METADATA[form_key]["pdf"])
     page = doc[0]
     for fld in FORM_METADATA[form_key]["fields"]:
-        txt = answers.get(fld["name"], "")
-        if not txt:
+        name = fld["name"]
+        val  = answers.get(name, "")
+        if not val:
             continue
         x, y = fld["rect"][:2]
-        page.insert_text((x, y), txt, fontsize=12)
+        page.insert_text((x, y), val, fontsize=12)
     buf = io.BytesIO()
     doc.save(buf)
     return buf.getvalue()
 
-
-# ─── 6. STREAMLIT CHAT STATE ───────────────────────────────────────────────────
+# ─── 6. STREAMLIT CHAT ─────────────────────────────────────────────────────────
 if "history" not in st.session_state:
     st.session_state.history = [
         {"role":"bot", "content":"Hi! Describe your situation and I’ll find the right form."}
@@ -116,32 +105,31 @@ if "history" not in st.session_state:
     st.session_state.form_key = None
     st.session_state.filled   = False
 
-# Render history
 for msg in st.session_state.history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Handle input
 if user_msg := st.chat_input("…"):
     st.session_state.history.append({"role":"user","content":user_msg})
 
-    # 6a. Auto‐select form
+    # a) pick form
     if st.session_state.form_key is None:
         st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
-        key = select_form_key(user_msg)
-        if key == "none":
+        picked = select_form_key(user_msg)
+        if picked == "none":
             bot = (
-                "Sorry, I don’t have that form in my demo.  "
-                f"Browse all USCIS forms here: [USCIS Forms]({FALLBACK_LINK})\n\n"
-                "You can still ask me other legal questions."
+                "I couldn’t match a demo form.  Browse all USCIS forms here:\n\n"
+                f"[USCIS Forms]({FALLBACK_LINK})\n\n"
+                "Feel free to ask me other legal questions."
             )
         else:
-            st.session_state.form_key = key
-            bot = f"I think **{FORM_METADATA[key]['title']}** is right—let’s fill it out.  I’ll ask each field."
+            st.session_state.form_key = picked
+            title = FORM_METADATA[picked]["title"]
+            bot = f"I think **{title}** is it—let’s fill it out. I’ll ask each field."
         st.session_state.history.append({"role":"bot","content":bot})
         st.chat_message("bot").markdown(bot)
 
-    # 6b. Collect & fill
+    # b) fill fields
     elif not st.session_state.filled:
         spec = FORM_METADATA[st.session_state.form_key]
         answers = {}
@@ -159,10 +147,10 @@ if user_msg := st.chat_input("…"):
             )
             st.session_state.filled = True
 
-    # 6c. Free‐form Q&A
+    # c) free-form Q&A
     else:
         convo = "\n".join(f"{m['role'].upper()}: {m['content']}" for m in st.session_state.history)
         prompt = convo + "\nBOT:"
-        reply = llm_generate(prompt)
+        reply = llm_generate(prompt) or "Sorry, I can’t answer that right now."
         st.session_state.history.append({"role":"bot","content":reply})
         st.chat_message("bot").markdown(reply)
