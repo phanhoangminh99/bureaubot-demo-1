@@ -53,10 +53,22 @@ def call_huggingface(prompt: str, max_tokens: int = 256) -> str:
             "temperature": 0.2
         }
     }
-    resp = requests.post(HF_API_URL, headers=HEADERS, json=payload)
-    resp.raise_for_status()
-    data = resp.json()
-    return data[0]["generated_text"].strip()
+    try:
+        resp = requests.post(HF_API_URL, headers=HEADERS, json=payload)
+        resp.raise_for_status()
+        data = resp.json()
+        return data[0]["generated_text"].strip()
+    except requests.exceptions.HTTPError as e:
+        # Show status code & body in the app
+        st.error(f"❌ Hugging Face API error {resp.status_code}")
+        st.code(resp.text)
+        # Fallback so your code continues
+        return "ERROR"
+    except ValueError:
+        # Non-JSON response
+        st.error("❌ Hugging Face returned invalid JSON")
+        st.code(resp.text)
+        return "ERROR"
 
 
 # ─── 4) Form‐selection using all metas ──────────────────────────────────────────
@@ -83,11 +95,10 @@ def llm_select_form(case_info: str) -> str:
         \"\"\"{case_info}\"\"\"
     """).strip()
 
-    result = call_huggingface(prompt, max_tokens=32)
-    result = result.split()[0].strip()  # only first token
-    if result in FORM_KEYS or result == "NONE":
-        return result
+    result = result.split()[0].strip()
+if result == "ERROR" or result not in FORM_KEYS + ["NONE"]:
     return "NONE"
+return result
 
 
 # ─── 5) Build PDF payload ──────────────────────────────────────────────────────
