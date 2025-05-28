@@ -11,11 +11,11 @@ from huggingface_hub import InferenceApi, login
 st.set_page_config(page_title="Legal Chat & Form Bot", layout="wide")
 st.header("🗂️ Legal Chat & Form Bot")
 
-# ─── 2. LOAD FORMS + METADATA ────────────────────────────────────────────────────
+# ─── 2. LOAD YOUR FORMS + METADATA ──────────────────────────────────────────────
 FORM_DIR = Path("forms")
 FORM_METADATA = {}
 for pdf in FORM_DIR.glob("*.pdf"):
-    key = pdf.stem  # e.g. "ice_form_i246"
+    key = pdf.stem
     meta = FORM_DIR / f"{key}_meta.json"
     if meta.exists():
         spec = json.loads(meta.read_text())
@@ -27,7 +27,7 @@ for pdf in FORM_DIR.glob("*.pdf"):
 
 FALLBACK_LINK = "https://www.uscis.gov/forms"
 
-# ─── 3. HUGGING FACE INFERENCE API (Zero‐Shot) ────────────────────────────────────
+# ─── 3. HUGGING FACE ZERO-SHOT CLIENT ─────────────────────────────────────────────
 hf_token = st.secrets.get("HF_TOKEN", "")
 if not hf_token:
     hf_token = st.text_input("Hugging Face API Token", type="password")
@@ -37,29 +37,33 @@ if not hf_token:
 login(token=hf_token)
 
 @st.cache_resource
-def get_zero_shot_client():
+def get_zs_client():
     return InferenceApi(repo_id="facebook/bart-large-mnli", token=hf_token)
 
-zs_client = get_zero_shot_client()
+zs_client = get_zs_client()
 
-# ─── 4. ZERO‐SHOT FORM SELECTOR ───────────────────────────────────────────────────
+# ─── 4. ZERO-SHOT FORM SELECTOR ───────────────────────────────────────────────────
 def select_form_key(situation: str, threshold: float = 0.3) -> str:
     labels = list(FORM_METADATA.keys())
     try:
-        payload = {
-            "inputs": situation,
-            "parameters": {"candidate_labels": labels, "multi_label": False}
-        }
-        response = zs_client(payload)
-        top_label = response.get("labels", [None])[0]
-        top_score = response.get("scores", [0.0])[0]
-        if top_label and top_score >= threshold:
+        # call with raw_response=True so we can parse the plain-text JSON
+        resp = zs_client(
+            inputs=situation,
+            parameters={"candidate_labels": labels, "multi_label": False},
+            raw_response=True
+        )
+        # resp.content is bytes; decode and parse JSON
+        payload = resp.content.decode("utf-8")
+        data = json.loads(payload)
+        top_label = data["labels"][0]
+        top_score = data["scores"][0]
+        if top_score >= threshold:
             return top_label
     except Exception as e:
         st.warning(f"Zero-shot API error: {e}")
     return "none"
 
-# ─── 5. PDF‐FILLER ───────────────────────────────────────────────────────────────
+# ─── 5. PDF-FILLER ───────────────────────────────────────────────────────────────
 def fill_pdf_bytes(form_key, answers):
     meta = FORM_METADATA.get(form_key)
     if not meta:
@@ -84,19 +88,19 @@ if "history" not in st.session_state:
     st.session_state.form_key = None
     st.session_state.filled   = False
 
-# Render history
+# render history
 for msg in st.session_state.history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Handle new user input
+# handle user input
 if user_msg := st.chat_input("…"):
-    # Echo user
+    # echo user
     st.session_state.history.append({"role": "user", "content": user_msg})
     with st.chat_message("user"):
         st.markdown(user_msg)
 
-    # A) Auto‐select form
+    # Step A: pick form if unset
     if st.session_state.form_key is None:
         st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
         with st.chat_message("bot"):
@@ -118,7 +122,7 @@ if user_msg := st.chat_input("…"):
             st.session_state.history.append({"role":"bot","content":bot})
             st.chat_message("bot").markdown(bot)
 
-    # B) Prompt & fill fields
+    # Step B: prompt & fill fields
     elif not st.session_state.filled:
         meta = FORM_METADATA[st.session_state.form_key]
         answers = {}
@@ -140,7 +144,7 @@ if user_msg := st.chat_input("…"):
             else:
                 st.error("Error generating PDF.")
 
-    # C) Done
+    # Step C: done
     else:
         done = "✅ Done! Refresh to start again."
         st.session_state.history.append({"role":"bot","content":done})
