@@ -42,21 +42,18 @@ def get_zs_client():
 
 zs_client = get_zs_client()
 
-# ─── 4. ZERO-SHOT FORM SELECTOR ───────────────────────────────────────────────────
+# ─── 4. ZERO-SHOT FORM SELECTOR ──────────────────────────────────────────────────
 def select_form_key(situation: str, threshold: float = 0.3) -> str:
     labels = list(FORM_METADATA.keys())
     try:
-        # call with raw_response=True so we can parse the plain-text JSON
-        resp = zs_client(
-            inputs=situation,
-            parameters={"candidate_labels": labels, "multi_label": False},
-            raw_response=True
-        )
-        # resp.content is bytes; decode and parse JSON
-        payload = resp.content.decode("utf-8")
-        data = json.loads(payload)
-        top_label = data["labels"][0]
-        top_score = data["scores"][0]
+        payload = {
+            "inputs": situation,
+            "parameters": { "candidate_labels": labels, "multi_label": False }
+        }
+        response = zs_client(payload)  # correct single-arg signature
+        # response is a dict: {"labels": [...], "scores": [...]}
+        top_label = response["labels"][0]
+        top_score = response["scores"][0]
         if top_score >= threshold:
             return top_label
     except Exception as e:
@@ -71,19 +68,19 @@ def fill_pdf_bytes(form_key, answers):
     doc = fitz.open(meta["pdf"])
     page = doc[0]
     for fld in meta["fields"]:
-        val = answers.get(fld["name"], "")
-        if not val:
+        v = answers.get(fld["name"], "")
+        if not v:
             continue
         x, y = fld["rect"][:2]
-        page.insert_text((x, y), val, fontsize=12)
+        page.insert_text((x, y), v, fontsize=12)
     buf = io.BytesIO()
     doc.save(buf)
     return buf.getvalue()
 
-# ─── 6. STREAMLIT CHAT STATE ────────────────────────────────────────────────────
+# ─── 6. CHAT STATE ───────────────────────────────────────────────────────────────
 if "history" not in st.session_state:
     st.session_state.history = [
-        {"role": "bot", "content": "Hi! Describe your situation and I’ll find the right form."}
+        {"role":"bot","content":"Hi! Describe your situation and I’ll find the right form."}
     ]
     st.session_state.form_key = None
     st.session_state.filled   = False
@@ -93,14 +90,14 @@ for msg in st.session_state.history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# handle user input
+# handle input
 if user_msg := st.chat_input("…"):
-    # echo user
-    st.session_state.history.append({"role": "user", "content": user_msg})
+    # 1) echo user
+    st.session_state.history.append({"role":"user","content":user_msg})
     with st.chat_message("user"):
         st.markdown(user_msg)
 
-    # Step A: pick form if unset
+    # 2) select form
     if st.session_state.form_key is None:
         st.session_state.history.append({"role":"bot","content":"Let me find the right form…"})
         with st.chat_message("bot"):
@@ -113,16 +110,14 @@ if user_msg := st.chat_input("…"):
                 f"Browse all USCIS forms here: [USCIS Forms]({FALLBACK_LINK})\n\n"
                 "Try another question or adjust your wording."
             )
-            st.session_state.history.append({"role":"bot","content":bot})
-            st.chat_message("bot").markdown(bot)
         else:
+            bot = f"I’ve selected **{FORM_METADATA[key]['title']}**. Let’s fill it out—please answer the fields."
             st.session_state.form_key = key
-            title = FORM_METADATA[key]["title"]
-            bot = f"I’ve selected **{title}**. Let’s fill it out—please answer the fields."
-            st.session_state.history.append({"role":"bot","content":bot})
-            st.chat_message("bot").markdown(bot)
 
-    # Step B: prompt & fill fields
+        st.session_state.history.append({"role":"bot","content":bot})
+        st.chat_message("bot").markdown(bot)
+
+    # 3) prompt & fill
     elif not st.session_state.filled:
         meta = FORM_METADATA[st.session_state.form_key]
         answers = {}
@@ -130,21 +125,18 @@ if user_msg := st.chat_input("…"):
         for fld in meta["fields"]:
             answers[fld["name"]] = st.text_input(fld["prompt"], key=fld["name"])
         if st.button("Generate Filled PDF"):
-            pdf_bytes = fill_pdf_bytes(st.session_state.form_key, answers)
-            if pdf_bytes:
+            pdf = fill_pdf_bytes(st.session_state.form_key, answers)
+            if pdf:
                 st.session_state.history.append({"role":"bot","content":"Here’s your filled form:"})
                 with st.chat_message("bot"):
-                    st.download_button(
-                        "📄 Download PDF",
-                        data=pdf_bytes,
-                        file_name=f"{st.session_state.form_key}_filled.pdf",
-                        mime="application/pdf"
-                    )
+                    st.download_button("📄 Download PDF", data=pdf,
+                                       file_name=f"{st.session_state.form_key}_filled.pdf",
+                                       mime="application/pdf")
                 st.session_state.filled = True
             else:
                 st.error("Error generating PDF.")
 
-    # Step C: done
+    # 4) done
     else:
         done = "✅ Done! Refresh to start again."
         st.session_state.history.append({"role":"bot","content":done})
