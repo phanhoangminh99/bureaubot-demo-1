@@ -96,9 +96,9 @@ def llm_select_form(case_info: str) -> str:
     """).strip()
 
     result = result.split()[0].strip()
-if result == "ERROR" or result not in FORM_KEYS + ["NONE"]:
+    if result == "ERROR" or result not in FORM_KEYS + ["NONE"]:
     return "NONE"
-return result
+    return result
 
 
 # ─── 5) Build PDF payload ──────────────────────────────────────────────────────
