@@ -27,19 +27,18 @@ def call_huggingface(prompt, max_tokens=256):
             "temperature": 0.2
         }
     }
+
     response = requests.post(HF_API_URL, headers=HEADERS, json=payload)
 
-    if not response.ok:
-        st.error("🛑 Hugging Face API error:")
-        st.code(response.text)
-        raise RuntimeError("Hugging Face API returned an error")
+    # Always show response code + raw response in Streamlit
+    st.info(f"🛰️ Response Status Code: {response.status_code}")
+    st.code(response.text, language="json")
 
     try:
         return response.json()[0]["generated_text"].strip()
     except Exception as e:
-        st.error("❌ Failed to parse Hugging Face response as JSON")
-        st.code(response.text)  # This will show the real problem
-        raise e
+        raise RuntimeError("❌ Hugging Face API did not return JSON.")
+
 
 # ─── FORM FUNCTIONS ───────────────────────────────────
 
